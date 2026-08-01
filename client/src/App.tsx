@@ -3,7 +3,13 @@ import { useAuthStore } from './store/useAuthStore';
 import { api } from './lib/api';
 import { Navbar } from './components/Navbar';
 import { CommandPalette } from './components/CommandPalette';
+import { LandingPage } from './features/landing/LandingPage';
 import { BentoDashboard } from './features/dashboard/BentoDashboard';
+import { CardsView } from './features/cards/CardsView';
+import { LoansView } from './features/loans/LoansView';
+import { MarketplaceView } from './features/marketplace/MarketplaceView';
+import { AuthModal } from './features/auth/AuthModal';
+
 import { DepositModal } from './features/modals/DepositModal';
 import { ConvertModal } from './features/modals/ConvertModal';
 import { IssueCardModal } from './features/modals/IssueCardModal';
@@ -13,11 +19,15 @@ import { MarketplaceModal } from './features/modals/MarketplaceModal';
 import { CardDetails, LoanDetails, LedgerEntry } from '@novabank/shared';
 
 export function App() {
-  const { user, token, setAuth } = useAuthStore();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const { user, token, setAuth, logout } = useAuthStore();
+  const [activeTab, setActiveTab] = useState<string>(token ? 'dashboard' : 'landing');
   const [cmdOpen, setCmdOpen] = useState(false);
 
-  // Active Modals
+  // Auth Modal State
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
+
+  // Active Feature Modals
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   // App Data State
@@ -27,30 +37,29 @@ export function App() {
   const [loans, setLoans] = useState<LoanDetails[]>([]);
   const [history, setHistory] = useState<LedgerEntry[]>([]);
 
-  // Initialize Demo Auth if not logged in
+  // Restore Authenticated User Session on Mount
   useEffect(() => {
-    const initAuth = async () => {
-      if (!token) {
+    const restoreSession = async () => {
+      if (token) {
         try {
-          // Auto-login or register demo user for instant interactive testing
-          const demoEmail = `demo.user_${Math.floor(Math.random() * 1000)}@novabank.io`;
-          const res = await api.post('/auth/register', {
-            email: demoEmail,
-            password: 'Password123!',
-            fullName: 'Alex Vance',
-            phone: '+1 555 019 2831',
-          });
-
+          const res = await api.get('/auth/me');
           if (res.data.success) {
-            setAuth(res.data.data.user, res.data.data.tokens.accessToken);
+            setAuth(res.data.data, token);
+          } else {
+            logout();
+            setActiveTab('landing');
           }
         } catch (err) {
-          console.error('Auto demo signup error:', err);
+          console.warn('Session verification failed, resetting token:', err);
+          logout();
+          setActiveTab('landing');
         }
+      } else {
+        setActiveTab('landing');
       }
     };
-    initAuth();
-  }, [token, setAuth]);
+    restoreSession();
+  }, [token]);
 
   // Load User Banking Data
   const refreshData = async () => {
@@ -89,6 +98,11 @@ export function App() {
     refreshData();
   }, [token]);
 
+  const handleOpenAuth = (mode: 'login' | 'register') => {
+    setAuthModalMode(mode);
+    setAuthModalOpen(true);
+  };
+
   const handleCommandSelect = (action: string) => {
     if (action === 'open_cmd') setCmdOpen(true);
     else if (action === 'deposit') setActiveModal('deposit');
@@ -109,23 +123,76 @@ export function App() {
       </div>
 
       {/* Top Navbar */}
-      <Navbar onOpenCmd={() => setCmdOpen(true)} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navbar
+        onOpenCmd={() => setCmdOpen(true)}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onOpenAuth={handleOpenAuth}
+      />
 
       {/* Main Content Area */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8">
-        <BentoDashboard
-          onOpenModal={(m) => setActiveModal(m)}
-          balances={balances}
-          depositAddresses={depositAddresses}
-          cards={cards}
-          loans={loans}
-          history={history}
-          refreshData={refreshData}
-        />
+        {activeTab === 'landing' && (
+          <LandingPage
+            onOpenAuth={handleOpenAuth}
+            onLaunchApp={() => {
+              if (!token) handleOpenAuth('login');
+              else setActiveTab('dashboard');
+            }}
+          />
+        )}
+
+        {activeTab === 'dashboard' && (
+          <BentoDashboard
+            onOpenModal={(m) => setActiveModal(m)}
+            balances={balances}
+            depositAddresses={depositAddresses}
+            cards={cards}
+            loans={loans}
+            history={history}
+            refreshData={refreshData}
+          />
+        )}
+
+        {activeTab === 'cards' && (
+          <CardsView
+            cards={cards}
+            onOpenIssueModal={() => setActiveModal('issue_card')}
+            onOpenTestModal={() => setActiveModal('test_card')}
+          />
+        )}
+
+        {activeTab === 'loans' && (
+          <LoansView
+            loans={loans}
+            balances={balances}
+            onOpenLoanModal={() => setActiveModal('loan')}
+            refreshData={refreshData}
+          />
+        )}
+
+        {activeTab === 'marketplace' && (
+          <MarketplaceView
+            balances={balances}
+            onOpenConvertModal={() => setActiveModal('convert')}
+            onOpenMarketplaceModal={() => setActiveModal('marketplace')}
+          />
+        )}
       </main>
 
       {/* Command Palette */}
       <CommandPalette isOpen={cmdOpen} onClose={() => setCmdOpen(false)} onSelectAction={handleCommandSelect} />
+
+      {/* Auth Modal (Sign In / Register / 1-Click Demo Sandbox) */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authModalMode}
+        onSuccess={() => {
+          refreshData();
+          setActiveTab('dashboard');
+        }}
+      />
 
       {/* Interactive Feature Modals */}
       <DepositModal

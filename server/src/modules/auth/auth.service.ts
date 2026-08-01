@@ -113,6 +113,12 @@ export class AuthService {
     return { success: true, message: '2FA enabled successfully' };
   }
 
+  public static async getMe(userId: string) {
+    const user = await User.findById(userId);
+    if (!user) throw new NotFoundError('User not found');
+    return this.toPublicUser(user);
+  }
+
   public static generateTokens(userId: string, email: string, role: UserRole) {
     const accessToken = jwt.sign(
       { userId, email, role },

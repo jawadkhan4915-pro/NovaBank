@@ -62,4 +62,18 @@ export class AuthController {
       next(err);
     }
   }
+
+  public static async getMe(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user!.userId;
+      const result = await AuthService.getMe(userId);
+      const response: ApiResponse<typeof result> = {
+        success: true,
+        data: result,
+      };
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
