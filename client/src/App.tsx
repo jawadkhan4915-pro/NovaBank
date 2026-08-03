@@ -5,6 +5,7 @@ import { api } from './lib/api';
 import { Navbar } from './components/Navbar';
 import { CommandPalette } from './components/CommandPalette';
 import { AmbientCanvas } from './components/AmbientCanvas';
+import { Footer } from './components/Footer';
 import { LandingPage } from './features/landing/LandingPage';
 import { BentoDashboard } from './features/dashboard/BentoDashboard';
 import { CardsView } from './features/cards/CardsView';
@@ -207,6 +208,9 @@ export function App() {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      {/* Footer */}
+      <Footer setActiveTab={setActiveTab} onOpenAuth={handleOpenAuth} />
 
       {/* Command Palette */}
       <CommandPalette isOpen={cmdOpen} onClose={() => setCmdOpen(false)} onSelectAction={handleCommandSelect} />

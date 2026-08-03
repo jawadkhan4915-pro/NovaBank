@@ -41,9 +41,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
     { id: 'loans', label: 'Loans', icon: Landmark },
     { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
     { id: 'settings', label: 'Settings', icon: Settings },
-    { id: 'support', label: 'Support', icon: MessageSquare },
-    { id: 'terms', label: 'Terms', icon: FileText },
-    { id: 'faqs', label: 'FAQs', icon: HelpCircle },
   ];
 
   return (
@@ -69,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
         </div>
 
         {/* Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 bg-surface p-1 rounded-xl border border-glass-border">
+        <nav className="hidden md:flex items-center gap-1 bg-surface p-1 rounded-xl border border-glass-border">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -77,7 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive
                     ? 'bg-gold/15 text-gold border border-gold/30 shadow-sm'
                     : 'text-ink-muted hover:text-ink hover:bg-surface-hover'
@@ -158,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
       </div>
 
       {/* Mobile Nav Tabs Bar */}
-      <div className="flex lg:hidden items-center justify-between overflow-x-auto gap-1 mt-3 pt-2 border-t border-glass-border text-xs no-scrollbar">
+      <div className="flex md:hidden items-center justify-around gap-1 mt-3 pt-2 border-t border-glass-border text-xs">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
