@@ -33,7 +33,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     { id: 'test_card', label: 'Test Card Charge POS Simulator', icon: CreditCard, cat: 'Cards' },
     { id: 'apply_loan', label: 'Take Crypto-Collateralized Loan (50% LTV)', icon: Landmark, cat: 'Loans' },
     { id: 'marketplace', label: 'Shop Multi-Crypto Marketplace', icon: ShoppingBag, cat: 'Marketplace' },
-    { id: 'kyc', label: 'Complete KYC Verification', icon: ShieldCheck, cat: 'Account' },
+    { id: 'settings', label: 'Account & Security Settings (2FA TOTP)', icon: ShieldCheck, cat: 'Account' },
+    { id: 'support', label: 'Support Desk & Emergency Security Freeze', icon: ShieldCheck, cat: 'Support' },
+    { id: 'terms', label: 'Terms of Service & Fee Schedule', icon: ShieldCheck, cat: 'Legal' },
+    { id: 'faqs', label: 'Frequently Asked Questions & Docs', icon: ShieldCheck, cat: 'Help' },
   ];
 
   const filtered = actions.filter((a) =>

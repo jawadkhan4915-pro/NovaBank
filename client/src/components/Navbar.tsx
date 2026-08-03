@@ -13,6 +13,10 @@ import {
   LogIn,
   UserPlus,
   LayoutDashboard,
+  Settings,
+  HelpCircle,
+  FileText,
+  MessageSquare,
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -29,6 +33,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
     if (user) setActiveTab('dashboard');
     else setActiveTab('landing');
   };
+
+  const navItems = [
+    { id: 'landing', label: 'Home', icon: Home },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'cards', label: 'Cards', icon: CreditCard },
+    { id: 'loans', label: 'Loans', icon: Landmark },
+    { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
+    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'support', label: 'Support', icon: MessageSquare },
+    { id: 'terms', label: 'Terms', icon: FileText },
+    { id: 'faqs', label: 'FAQs', icon: HelpCircle },
+  ];
 
   return (
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-glass-border px-4 lg:px-8 py-3.5 backdrop-blur-xl">
@@ -53,21 +69,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
         </div>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 bg-surface p-1 rounded-xl border border-glass-border">
-          {[
-            { id: 'landing', label: 'Home', icon: Home },
-            { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-            { id: 'cards', label: 'Cards', icon: CreditCard },
-            { id: 'loans', label: 'Loans', icon: Landmark },
-            { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
-          ].map((item) => {
+        <nav className="hidden lg:flex items-center gap-1 bg-surface p-1 rounded-xl border border-glass-border">
+          {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive
                     ? 'bg-gold/15 text-gold border border-gold/30 shadow-sm'
                     : 'text-ink-muted hover:text-ink hover:bg-surface-hover'
@@ -92,8 +102,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
           </button>
 
           {user ? (
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface border border-glass-border">
+            <div className="flex items-center gap-2">
+              <div
+                onClick={() => setActiveTab('settings')}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover border border-glass-border cursor-pointer transition-all"
+              >
                 <UserIcon className="h-4 w-4 text-gold" />
                 <div className="text-left hidden sm:block">
                   <div className="text-xs font-medium text-ink leading-tight">{user.fullName}</div>
@@ -145,21 +158,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
       </div>
 
       {/* Mobile Nav Tabs Bar */}
-      <div className="flex md:hidden items-center justify-around mt-3 pt-2 border-t border-glass-border text-xs">
-        {[
-          { id: 'landing', label: 'Home', icon: Home },
-          { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-          { id: 'cards', label: 'Cards', icon: CreditCard },
-          { id: 'loans', label: 'Loans', icon: Landmark },
-          { id: 'marketplace', label: 'Shop', icon: ShoppingBag },
-        ].map((item) => {
+      <div className="flex lg:hidden items-center justify-between overflow-x-auto gap-1 mt-3 pt-2 border-t border-glass-border text-xs no-scrollbar">
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           return (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`min-h-[44px] px-3 py-1.5 rounded-xl flex flex-col items-center justify-center gap-0.5 text-xs font-semibold transition-all ${
+              className={`min-h-[44px] px-2.5 py-1 rounded-xl flex flex-col items-center justify-center gap-0.5 text-xs font-semibold whitespace-nowrap transition-all ${
                 isActive ? 'text-gold bg-gold/15 border border-gold/30' : 'text-ink-muted hover:text-ink'
               }`}
             >

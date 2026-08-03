@@ -10,6 +10,10 @@ import { BentoDashboard } from './features/dashboard/BentoDashboard';
 import { CardsView } from './features/cards/CardsView';
 import { LoansView } from './features/loans/LoansView';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
+import { SettingsView } from './features/settings/SettingsView';
+import { SupportView } from './features/support/SupportView';
+import { TermsView } from './features/terms/TermsView';
+import { FaqsView } from './features/faqs/FaqsView';
 import { AuthModal } from './features/auth/AuthModal';
 
 import { DepositModal } from './features/modals/DepositModal';
@@ -113,6 +117,10 @@ export function App() {
     else if (action === 'test_card') setActiveModal('test_card');
     else if (action === 'apply_loan') setActiveModal('loan');
     else if (action === 'marketplace') setActiveModal('marketplace');
+    else if (action === 'settings') setActiveTab('settings');
+    else if (action === 'support') setActiveTab('support');
+    else if (action === 'terms') setActiveTab('terms');
+    else if (action === 'faqs') setActiveTab('faqs');
   };
 
   return (
@@ -191,6 +199,11 @@ export function App() {
                 onOpenMarketplaceModal={() => setActiveModal('marketplace')}
               />
             )}
+
+            {activeTab === 'settings' && <SettingsView />}
+            {activeTab === 'support' && <SupportView />}
+            {activeTab === 'terms' && <TermsView />}
+            {activeTab === 'faqs' && <FaqsView />}
           </motion.div>
         </AnimatePresence>
       </main>
