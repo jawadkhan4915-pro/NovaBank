@@ -83,30 +83,30 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-      <div className="w-full max-w-md glass-card rounded-2xl border border-white/20 p-6 shadow-2xl relative animate-in fade-in zoom-in-95">
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+      <div className="w-full max-w-md glass-hero rounded-2xl border border-glass-border p-6 shadow-2xl relative animate-in fade-in zoom-in-95">
+        <button onClick={onClose} className="absolute top-4 right-4 text-ink-muted hover:text-ink">
           <X className="h-5 w-5" />
         </button>
 
         <div className="flex items-center gap-3 mb-5">
-          <div className="p-2.5 rounded-xl bg-aurora-violet/10 text-aurora-violet border border-aurora-violet/20">
+          <div className="p-2.5 rounded-xl bg-violet/15 text-violet border border-violet/30">
             <ArrowRightLeft className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-white">Convert Crypto to USD</h3>
-            <p className="text-xs text-slate-400">Guaranteed 15-second locked market rate quote</p>
+            <h3 className="font-display font-bold text-lg text-ink">Convert Crypto to USD</h3>
+            <p className="text-xs text-ink-muted">Guaranteed 15-second locked market rate quote</p>
           </div>
         </div>
 
         {/* Input Form */}
         <div className="space-y-4 mb-5">
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1 font-medium">
+            <div className="flex justify-between text-xs text-ink-muted mb-1 font-medium font-mono">
               <span>Pay Crypto</span>
               <span>Available: {userBalance} {fromAsset}</span>
             </div>
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-black/40 border border-white/10">
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-background border border-glass-border">
               <input
                 type="number"
                 step="0.01"
@@ -115,7 +115,7 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
                   setAmount(e.target.value);
                   setQuote(null);
                 }}
-                className="w-full bg-transparent text-white font-bold text-lg focus:outline-none"
+                className="w-full bg-transparent text-ink font-mono font-bold text-lg focus:outline-none"
               />
               <select
                 value={fromAsset}
@@ -123,10 +123,10 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
                   setFromAsset(e.target.value as CryptoCurrency);
                   setQuote(null);
                 }}
-                className="bg-white/10 text-white font-semibold text-xs rounded-lg px-2.5 py-1.5 border border-white/10 focus:outline-none"
+                className="bg-surface text-ink font-mono font-bold text-xs rounded-xl px-2.5 py-1.5 border border-glass-border focus:outline-none"
               >
                 {['BTC', 'ETH', 'BNB', 'SOL', 'BCH'].map((c) => (
-                  <option key={c} value={c} className="bg-[#0A0A0F] text-white">{c}</option>
+                  <option key={c} value={c} className="bg-background text-ink">{c}</option>
                 ))}
               </select>
             </div>
@@ -136,27 +136,27 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
             <button
               onClick={handleRequestQuote}
               disabled={loadingQuote}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-aurora-violet to-aurora-cyan hover:opacity-90 font-bold text-sm text-white shadow-lg transition-all"
+              className="w-full py-3 rounded-xl bg-gold hover:bg-gold-dim text-background font-bold text-xs shadow-gold-glow transition-all"
             >
               {loadingQuote ? 'Locking Live Quote...' : 'Get Locked Quote'}
             </button>
           ) : (
-            <div className="p-4 rounded-xl bg-gradient-to-br from-aurora-violet/20 to-aurora-cyan/10 border border-aurora-violet/30 space-y-3">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
-                <span className="flex items-center gap-1 text-aurora-cyan">
+            <div className="p-4 rounded-xl bg-surface border border-violet/30 space-y-3">
+              <div className="flex items-center justify-between text-xs font-semibold text-ink">
+                <span className="flex items-center gap-1 text-violet">
                   <ShieldCheck className="h-4 w-4" /> Quote Locked
                 </span>
-                <span className="flex items-center gap-1 text-amber-400 font-mono">
+                <span className="flex items-center gap-1 text-gold font-mono">
                   <Clock className="h-3.5 w-3.5" /> {timeLeft}s remaining
                 </span>
               </div>
 
-              <div className="flex items-baseline justify-between border-t border-white/10 pt-2">
-                <span className="text-xs text-slate-400">Receive USD</span>
-                <span className="text-xl font-black text-emerald-400 tabular-nums">${quote.toAmountUSD} USD</span>
+              <div className="flex items-baseline justify-between border-t border-glass-border pt-2">
+                <span className="text-xs text-ink-muted">Receive USD</span>
+                <span className="text-xl font-mono font-bold text-success">${quote.toAmountUSD} USD</span>
               </div>
 
-              <div className="text-[11px] text-slate-400 flex justify-between">
+              <div className="text-xs text-ink-muted flex justify-between font-mono">
                 <span>Rate: 1 {quote.fromCurrency} = ${quote.exchangeRate} USD</span>
                 <span>Fee: $0.00</span>
               </div>
@@ -164,7 +164,7 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
               <button
                 onClick={handleExecuteConversion}
                 disabled={executing}
-                className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 font-bold text-xs text-white transition-all shadow-md"
+                className="w-full py-2.5 rounded-xl bg-gold hover:bg-gold-dim font-bold text-xs text-background transition-all shadow-gold-glow"
               >
                 {executing ? 'Executing Conversion...' : 'Confirm Conversion Now'}
               </button>
@@ -172,7 +172,7 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
           )}
         </div>
 
-        {msg && <p className="text-xs text-center font-semibold text-emerald-400">{msg}</p>}
+        {msg && <p className="text-xs text-center font-mono font-semibold text-success">{msg}</p>}
       </div>
     </div>
   );

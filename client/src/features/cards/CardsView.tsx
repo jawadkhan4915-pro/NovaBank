@@ -14,19 +14,19 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-ink tracking-tight flex items-center gap-2">
             Virtual & Physical Cards
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-aurora-cyan/20 text-aurora-cyan border border-aurora-cyan/30 font-semibold">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-gold/20 text-gold border border-gold/30 font-semibold font-mono">
               Visa / Mastercard
             </span>
           </h1>
-          <p className="text-xs text-slate-400">Issue instant payment cards tied directly to your NovaBank ledger</p>
+          <p className="text-xs text-ink-muted">Issue instant payment cards tied directly to your NovaBank ledger</p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={onOpenIssueModal}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-aurora-cyan to-aurora-violet text-white text-xs font-bold hover:opacity-90 transition-all shadow-md"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gold hover:bg-gold-dim text-background text-xs font-bold transition-all shadow-gold-glow"
           >
             <Plus className="h-4 w-4" /> Issue New Card
           </button>
@@ -37,25 +37,25 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Issued Cards */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-300">
+          <div className="flex items-center justify-between text-xs font-bold text-ink">
             <span>Your Active Cards ({cards.length})</span>
-            <span className="text-[10px] text-slate-400">Instant Authorization</span>
+            <span className="text-xs text-ink-muted font-mono">Instant Authorization</span>
           </div>
 
           {cards.length === 0 ? (
-            <div className="glass-card rounded-3xl p-8 text-center border border-white/15 space-y-4">
-              <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-slate-400">
-                <CreditCard className="h-7 w-7" />
+            <div className="glass-card rounded-2xl p-8 text-center border border-glass-border space-y-4">
+              <div className="h-14 w-14 rounded-2xl bg-surface border border-glass-border flex items-center justify-center mx-auto text-ink-muted">
+                <CreditCard className="h-7 w-7 text-gold" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white">No Payment Cards Issued</h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                <h3 className="text-sm font-bold text-ink font-display">No Payment Cards Issued</h3>
+                <p className="text-xs text-ink-muted mt-1 max-w-sm mx-auto">
                   Issue a virtual card in seconds to spend your crypto and USD balances anywhere worldwide.
                 </p>
               </div>
               <button
                 onClick={onOpenIssueModal}
-                className="px-5 py-2.5 rounded-xl bg-aurora-violet text-white text-xs font-bold hover:bg-aurora-violet/90 transition-all inline-flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-gold hover:bg-gold-dim text-background text-xs font-bold transition-all shadow-gold-glow inline-flex items-center gap-1.5"
               >
                 <Plus className="h-4 w-4" /> Issue Virtual Card Now
               </button>
@@ -65,25 +65,25 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
               const spendPercentage = Math.min(100, Math.round((card.spentTodayUSD / card.spendLimitDailyUSD) * 100));
 
               return (
-                <div key={card.id} className="glass-card rounded-3xl p-6 border border-white/15 space-y-5">
+                <div key={card.id} className="glass-card rounded-2xl p-6 border border-glass-border space-y-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-slate-900 to-indigo-950 border border-white/20 flex items-center justify-center text-aurora-cyan">
+                      <div className="h-10 w-10 rounded-xl bg-surface border border-glass-border flex items-center justify-center text-gold">
                         <CreditCard className="h-5 w-5" />
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-white">{card.cardholderName}</div>
-                        <div className="text-[10px] text-slate-400 font-mono">
+                        <div className="text-sm font-bold text-ink">{card.cardholderName}</div>
+                        <div className="text-xs text-ink-muted font-mono">
                           {card.cardType} • Exp: {card.expiryMonth}/{card.expiryYear}
                         </div>
                       </div>
                     </div>
 
                     <span
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-bold border ${
                         card.status === 'ACTIVE'
-                          ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                          : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                          ? 'bg-success/20 text-success border-success/30'
+                          : 'bg-gold/20 text-gold border-gold/30'
                       }`}
                     >
                       {card.status}
@@ -91,22 +91,22 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
                   </div>
 
                   {/* Visual Card Display */}
-                  <div className="p-5 rounded-2xl bg-gradient-to-tr from-slate-950 via-slate-900 to-indigo-950 border border-white/20 shadow-xl space-y-4">
+                  <div className="p-5 rounded-2xl bg-gradient-to-tr from-[#0B0D12] via-[#141822] to-[#1E1B4B] border border-glass-border shadow-xl space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="font-black text-xs tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-aurora-cyan to-aurora-violet">
+                      <span className="font-mono font-bold text-xs tracking-widest text-gold">
                         NOVABANK
                       </span>
-                      <Zap className="h-4 w-4 text-amber-400" />
+                      <Zap className="h-4 w-4 text-gold" />
                     </div>
-                    <div className="font-mono text-base tracking-widest text-white font-bold">{card.maskedPan}</div>
-                    <div className="flex justify-between items-end text-[10px] text-slate-300">
+                    <div className="font-mono text-base tracking-widest text-ink font-bold">{card.maskedPan}</div>
+                    <div className="flex justify-between items-end text-xs text-ink-muted font-mono">
                       <div>
-                        <div className="text-[8px] text-slate-500 uppercase">Cardholder</div>
-                        <div className="font-bold">{card.cardholderName}</div>
+                        <div className="text-ink-faint uppercase text-xs font-semibold">Cardholder</div>
+                        <div className="font-bold text-ink">{card.cardholderName}</div>
                       </div>
                       <div>
-                        <div className="text-[8px] text-slate-500 uppercase">Status</div>
-                        <div className="font-bold text-emerald-400">READY</div>
+                        <div className="text-ink-faint uppercase text-xs font-semibold">Status</div>
+                        <div className="font-bold text-success">READY</div>
                       </div>
                     </div>
                   </div>
@@ -114,14 +114,14 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
                   {/* Spending Progress */}
                   <div className="space-y-1.5 pt-2">
                     <div className="flex justify-between text-xs font-semibold">
-                      <span className="text-slate-400">Daily Limit Spent</span>
-                      <span className="text-white font-mono">
+                      <span className="text-ink-muted">Daily Limit Spent</span>
+                      <span className="text-ink font-mono">
                         ${card.spentTodayUSD} / ${card.spendLimitDailyUSD} USD ({spendPercentage}%)
                       </span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="w-full h-2 rounded-full bg-surface border border-glass-border overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-aurora-cyan to-aurora-violet"
+                        className="h-full bg-gradient-to-r from-gold to-violet"
                         style={{ width: `${spendPercentage}%` }}
                       />
                     </div>
@@ -130,7 +130,7 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
                   <div className="flex gap-2 pt-2">
                     <button
                       onClick={onOpenTestModal}
-                      className="flex-1 py-2 rounded-xl bg-aurora-emerald/20 text-aurora-emerald border border-aurora-emerald/30 font-bold text-xs hover:bg-aurora-emerald/30 transition-all text-center"
+                      className="flex-1 py-2 rounded-xl bg-success/20 text-success border border-success/30 font-bold text-xs hover:bg-success/30 transition-all text-center"
                     >
                       Test POS Charge
                     </button>
@@ -143,21 +143,21 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
 
         {/* Right Column: Card Features & Fee Info */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="glass-card rounded-3xl p-6 border border-white/15 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-aurora-cyan" /> Card Security Rules
+          <div className="glass-card rounded-2xl p-6 border border-glass-border space-y-4">
+            <h3 className="text-sm font-bold text-ink font-display flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-gold" /> Card Security Rules
             </h3>
-            <ul className="space-y-3 text-xs text-slate-300">
+            <ul className="space-y-3 text-xs text-ink-muted">
               <li className="flex items-start gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-aurora-cyan mt-1.5" />
+                <span className="h-1.5 w-1.5 rounded-full bg-gold mt-1.5" />
                 <span>Zero cross-border FX markup on international POS purchases.</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-aurora-cyan mt-1.5" />
+                <span className="h-1.5 w-1.5 rounded-full bg-gold mt-1.5" />
                 <span>Tiered interchange fees: $0.10 (&le;$500), $0.50 ($500-$1000), $1.00 (&gt;$1000).</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-aurora-cyan mt-1.5" />
+                <span className="h-1.5 w-1.5 rounded-full bg-gold mt-1.5" />
                 <span>Instant balance deduction from USD fiat or auto-conversion from crypto.</span>
               </li>
             </ul>

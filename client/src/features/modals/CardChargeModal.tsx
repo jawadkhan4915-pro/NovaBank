@@ -54,32 +54,32 @@ export const CardChargeModal: React.FC<CardChargeModalProps> = ({ isOpen, onClos
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-      <div className="w-full max-w-md glass-card rounded-2xl border border-white/20 p-6 shadow-2xl relative animate-in fade-in zoom-in-95">
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
+      <div className="w-full max-w-md glass-hero rounded-2xl border border-glass-border p-6 shadow-2xl relative animate-in fade-in zoom-in-95">
+        <button onClick={onClose} className="absolute top-4 right-4 text-ink-muted hover:text-ink">
           <X className="h-5 w-5" />
         </button>
 
         <div className="flex items-center gap-3 mb-5">
-          <div className="p-2.5 rounded-xl bg-aurora-emerald/10 text-aurora-emerald border border-aurora-emerald/20">
+          <div className="p-2.5 rounded-xl bg-gold/15 text-gold border border-gold/30">
             <Zap className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-bold text-lg text-white">POS Card Charge Simulator</h3>
-            <p className="text-xs text-slate-400">Test real-time spend authorization & server Fee Engine rules</p>
+            <h3 className="font-display font-bold text-lg text-ink">POS Card Charge Simulator</h3>
+            <p className="text-xs text-ink-muted">Test real-time spend authorization & server Fee Engine rules</p>
           </div>
         </div>
 
         <div className="space-y-4 mb-5">
           <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">Select Card</label>
+            <label className="text-xs font-semibold text-ink-muted block mb-1">Select Card</label>
             <select
               value={selectedCardId || cards[0]?.id}
               onChange={(e) => setSelectedCardId(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none"
+              className="w-full bg-background border border-glass-border rounded-xl px-3.5 py-2 text-xs font-mono text-ink focus:outline-none focus:border-gold"
             >
               {cards.map((c) => (
-                <option key={c.id} value={c.id} className="bg-[#0A0A0F] text-white">
+                <option key={c.id} value={c.id} className="bg-background text-ink">
                   {c.cardType} — {c.maskedPan} ({c.status})
                 </option>
               ))}
@@ -87,30 +87,30 @@ export const CardChargeModal: React.FC<CardChargeModalProps> = ({ isOpen, onClos
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">Merchant Name</label>
+            <label className="text-xs font-semibold text-ink-muted block mb-1">Merchant Name</label>
             <input
               type="text"
               value={merchantName}
               onChange={(e) => setMerchantName(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none"
+              className="w-full bg-background border border-glass-border rounded-xl px-3.5 py-2 text-xs text-ink focus:outline-none focus:border-gold"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">Transaction Amount ($ USD)</label>
+            <label className="text-xs font-semibold text-ink-muted block mb-1">Transaction Amount ($ USD)</label>
             <input
               type="number"
               step="10"
               value={amountUSD}
               onChange={(e) => setAmountUSD(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-base font-bold text-white focus:outline-none"
+              className="w-full bg-background border border-glass-border rounded-xl px-3.5 py-2.5 text-base font-mono font-bold text-ink focus:outline-none focus:border-gold"
             />
           </div>
 
           {/* Fee Table Rule Indicator */}
-          <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs flex justify-between items-center">
-            <span className="text-slate-400 font-medium">Applied Server Fee Tier:</span>
-            <span className="font-bold text-aurora-cyan">
+          <div className="p-3 rounded-xl bg-surface border border-glass-border text-xs flex justify-between items-center">
+            <span className="text-ink-muted font-medium">Applied Server Fee Tier:</span>
+            <span className="font-mono font-bold text-gold">
               ${expectedFee.toFixed(2)} USD {amt <= 500 ? '(≤$500)' : amt <= 1000 ? '($500-$1K)' : '(>$1K)'}
             </span>
           </div>
@@ -118,7 +118,7 @@ export const CardChargeModal: React.FC<CardChargeModalProps> = ({ isOpen, onClos
           <button
             onClick={handleSimulateCharge}
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-aurora-emerald via-aurora-cyan to-aurora-violet font-bold text-sm text-white hover:opacity-90 transition-all shadow-lg"
+            className="w-full py-3 rounded-xl bg-gold hover:bg-gold-dim font-bold text-xs text-background transition-all shadow-gold-glow"
           >
             {loading ? 'Authorizing Card Transaction...' : 'Simulate POS Swipe'}
           </button>
@@ -129,22 +129,22 @@ export const CardChargeModal: React.FC<CardChargeModalProps> = ({ isOpen, onClos
           <div
             className={`p-4 rounded-xl border ${
               result.approved
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                : 'bg-red-500/10 border-red-500/30 text-red-300'
+                ? 'bg-success/10 border-success/30 text-success'
+                : 'bg-danger/10 border-danger/30 text-danger'
             }`}
           >
             <div className="flex items-center justify-between font-bold text-xs mb-1">
               <span>Status: {result.approved ? 'APPROVED ✓' : 'DECLINED ✗'}</span>
-              <span>Total Debited: ${result.totalDebitedUSD} USD</span>
+              <span className="font-mono">Total Debited: ${result.totalDebitedUSD} USD</span>
             </div>
             {result.approved ? (
-              <div className="text-[11px] space-y-0.5 opacity-90">
+              <div className="text-xs space-y-0.5 opacity-90 font-mono">
                 <div>Charge: ${result.amountUSD} USD</div>
                 <div>Fee Engine Deduction: ${result.feeAppliedUSD} USD</div>
-                <div className="font-mono text-[10px] truncate">Tx Ref: {result.transactionId}</div>
+                <div className="font-mono text-xs truncate">Tx Ref: {result.transactionId}</div>
               </div>
             ) : (
-              <div className="text-[11px] opacity-90">{result.reason}</div>
+              <div className="text-xs opacity-90">{result.reason}</div>
             )}
           </div>
         )}

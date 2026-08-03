@@ -100,31 +100,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-lg animate-in fade-in duration-200">
-      <div className="w-full max-w-md glass-card rounded-3xl border border-white/20 p-6 shadow-2xl relative overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-lg animate-in fade-in duration-200">
+      <div className="w-full max-w-md glass-hero rounded-3xl border border-gold/25 p-6 shadow-2xl relative overflow-hidden">
         {/* Top Glow Accent */}
-        <div className="absolute -top-16 -left-16 h-40 w-40 rounded-full bg-aurora-cyan/30 blur-3xl pointer-events-none" />
-        <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-aurora-violet/30 blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -left-16 h-40 w-40 rounded-full bg-gold/15 blur-3xl pointer-events-none" />
+        <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-violet/15 blur-3xl pointer-events-none" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10 transition-all"
+          className="absolute top-5 right-5 p-1.5 rounded-full bg-surface hover:bg-surface-hover text-ink-muted hover:text-ink border border-glass-border transition-all"
         >
           <X className="h-4 w-4" />
         </button>
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-gradient-to-tr from-aurora-cyan via-aurora-violet to-aurora-emerald p-[2px] mb-3">
-            <div className="h-full w-full bg-[#0A0A0F] rounded-[14px] flex items-center justify-center">
-              <ShieldCheck className="h-6 w-6 text-aurora-cyan" />
+          <div className="inline-flex items-center justify-center h-12 w-12 rounded-2xl bg-gradient-to-tr from-gold via-violet to-gold p-[2px] mb-3">
+            <div className="h-full w-full bg-background rounded-[14px] flex items-center justify-center">
+              <ShieldCheck className="h-6 w-6 text-gold" />
             </div>
           </div>
-          <h2 className="text-xl font-black text-white tracking-tight">
+          <h2 className="text-xl font-display font-bold text-ink tracking-tight">
             {mode === 'login' ? 'Welcome Back to NovaBank' : 'Create Your NovaBank Account'}
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-ink-muted mt-1">
             {mode === 'login'
               ? 'Access multi-asset crypto ledger, virtual debit cards & liquidity'
               : 'Join the next generation of crypto-fiat banking'}
@@ -132,15 +132,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex p-1 bg-white/5 rounded-xl border border-white/10 mb-5">
+        <div className="flex p-1 bg-surface rounded-xl border border-glass-border mb-5">
           <button
             type="button"
             onClick={() => {
               setMode('login');
               setErrorMsg('');
             }}
-            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-              mode === 'login' ? 'bg-aurora-violet text-white shadow-md' : 'text-slate-400 hover:text-white'
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+              mode === 'login' ? 'bg-gold text-background shadow-gold-glow' : 'text-ink-muted hover:text-ink'
             }`}
           >
             Sign In
@@ -151,8 +151,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               setMode('register');
               setErrorMsg('');
             }}
-            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-              mode === 'register' ? 'bg-aurora-violet text-white shadow-md' : 'text-slate-400 hover:text-white'
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+              mode === 'register' ? 'bg-violet text-white shadow-violet-glow' : 'text-ink-muted hover:text-ink'
             }`}
           >
             Register
@@ -161,7 +161,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Error Alert */}
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium text-center">
+          <div className="mb-4 p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-xs font-medium text-center">
             {errorMsg}
           </div>
         )}
@@ -171,34 +171,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {mode === 'register' && (
             <>
               <div>
-                <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <User className="absolute left-3 top-3 h-4 w-4 text-ink-faint" />
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Alex Vance"
-                    className="w-full pl-9 pr-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aurora-cyan transition-all"
+                    className="w-full pl-9 pr-4 py-2.5 bg-background border border-glass-border rounded-xl text-xs text-ink placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+                <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
                   Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-ink-faint" />
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+1 555 019 2831"
-                    className="w-full pl-9 pr-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aurora-cyan transition-all"
+                    className="w-full pl-9 pr-4 py-2.5 bg-background border border-glass-border rounded-xl text-xs text-ink placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
                   />
                 </div>
               </div>
@@ -206,46 +206,46 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           )}
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3 top-3 h-4 w-4 text-ink-faint" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="alex.vance@novabank.io"
-                className="w-full pl-9 pr-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aurora-cyan transition-all"
+                className="w-full pl-9 pr-4 py-2.5 bg-background border border-glass-border rounded-xl text-xs text-ink placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-semibold text-ink-muted uppercase tracking-wider mb-1">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3 top-3 h-4 w-4 text-ink-faint" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-9 pr-4 py-2.5 bg-black/40 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-aurora-cyan transition-all"
+                className="w-full pl-9 pr-4 py-2.5 bg-background border border-glass-border rounded-xl text-xs text-ink placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
               />
             </div>
           </div>
 
           {requires2FA && (
             <div>
-              <label className="block text-[11px] font-semibold text-amber-400 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-semibold text-gold uppercase tracking-wider mb-1">
                 2FA TOTP Authenticator Code
               </label>
               <div className="relative">
-                <KeyRound className="absolute left-3 top-3 h-4 w-4 text-amber-400" />
+                <KeyRound className="absolute left-3 top-3 h-4 w-4 text-gold" />
                 <input
                   type="text"
                   required
@@ -253,7 +253,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={twoFactorCode}
                   onChange={(e) => setTwoFactorCode(e.target.value)}
                   placeholder="123456"
-                  className="w-full pl-9 pr-4 py-2.5 bg-black/40 border border-amber-500/50 rounded-xl text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all"
+                  className="w-full pl-9 pr-4 py-2.5 bg-background border border-gold/50 rounded-xl text-xs text-ink font-mono placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
                 />
               </div>
             </div>
@@ -262,7 +262,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-aurora-cyan via-aurora-violet to-aurora-emerald hover:opacity-95 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-xl bg-gold hover:bg-gold-dim text-background font-bold text-xs shadow-gold-glow transition-all flex items-center justify-center gap-2"
           >
             {loading ? (
               <span>Processing...</span>
@@ -278,10 +278,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Divider */}
         <div className="relative my-5">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10" />
+            <div className="w-full border-t border-glass-border" />
           </div>
-          <div className="relative flex justify-center text-[10px] uppercase">
-            <span className="bg-[#0A0A0F] px-2 text-slate-500 font-semibold">Or Instant Access</span>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-ink-faint font-semibold">Or Instant Access</span>
           </div>
         </div>
 
@@ -290,9 +290,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           type="button"
           onClick={handleDemoAccess}
           disabled={loading}
-          className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-slate-200 font-bold text-xs transition-all flex items-center justify-center gap-2 group"
+          className="w-full py-2.5 rounded-xl bg-surface hover:bg-surface-hover border border-glass-border text-ink font-bold text-xs transition-all flex items-center justify-center gap-2 group"
         >
-          <Sparkles className="h-4 w-4 text-aurora-cyan group-hover:rotate-12 transition-transform" />
+          <Sparkles className="h-4 w-4 text-gold group-hover:rotate-12 transition-transform" />
           <span>Launch Demo Sandbox Mode (1-Click)</span>
         </button>
       </div>

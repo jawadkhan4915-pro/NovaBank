@@ -114,12 +114,12 @@ export function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0A0A0F] text-slate-100 flex flex-col selection:bg-aurora-violet selection:text-white">
+    <div className="relative min-h-screen bg-background text-ink flex flex-col selection:bg-violet selection:text-white">
       {/* Background Liquid Animated Gradient Blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-aurora-violet/15 blur-[120px] animate-blob-1" />
-        <div className="absolute top-[20%] right-[-10%] h-[600px] w-[600px] rounded-full bg-aurora-cyan/15 blur-[140px] animate-blob-2" />
-        <div className="absolute bottom-[-10%] left-[20%] h-[550px] w-[550px] rounded-full bg-aurora-emerald/10 blur-[130px] animate-blob-1" />
+        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-gold/10 blur-[140px] animate-blob-1" />
+        <div className="absolute top-[20%] right-[-10%] h-[600px] w-[600px] rounded-full bg-violet/10 blur-[160px] animate-blob-2" />
+        <div className="absolute bottom-[-10%] left-[20%] h-[550px] w-[550px] rounded-full bg-gold/5 blur-[140px] animate-blob-1" />
       </div>
 
       {/* Top Navbar */}
