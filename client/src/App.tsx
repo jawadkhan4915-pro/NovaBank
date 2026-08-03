@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from './store/useAuthStore';
 import { api } from './lib/api';
 import { Navbar } from './components/Navbar';
 import { CommandPalette } from './components/CommandPalette';
+import { AmbientCanvas } from './components/AmbientCanvas';
 import { LandingPage } from './features/landing/LandingPage';
 import { BentoDashboard } from './features/dashboard/BentoDashboard';
 import { CardsView } from './features/cards/CardsView';
@@ -115,7 +117,10 @@ export function App() {
 
   return (
     <div className="relative min-h-screen bg-background text-ink flex flex-col selection:bg-violet selection:text-white">
-      {/* Background Liquid Animated Gradient Blobs */}
+      {/* Anime.js Interactive Particles Background */}
+      <AmbientCanvas />
+
+      {/* Ambient Lighting Blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-gold/10 blur-[140px] animate-blob-1" />
         <div className="absolute top-[20%] right-[-10%] h-[600px] w-[600px] rounded-full bg-violet/10 blur-[160px] animate-blob-2" />
@@ -130,54 +135,64 @@ export function App() {
         onOpenAuth={handleOpenAuth}
       />
 
-      {/* Main Content Area */}
+      {/* Main Content Area with Framer Motion AnimatePresence */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8">
-        {activeTab === 'landing' && (
-          <LandingPage
-            onOpenAuth={handleOpenAuth}
-            onLaunchApp={() => {
-              if (!token) handleOpenAuth('login');
-              else setActiveTab('dashboard');
-            }}
-          />
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            {activeTab === 'landing' && (
+              <LandingPage
+                onOpenAuth={handleOpenAuth}
+                onLaunchApp={() => {
+                  if (!token) handleOpenAuth('login');
+                  else setActiveTab('dashboard');
+                }}
+              />
+            )}
 
-        {activeTab === 'dashboard' && (
-          <BentoDashboard
-            onOpenModal={(m) => setActiveModal(m)}
-            balances={balances}
-            depositAddresses={depositAddresses}
-            cards={cards}
-            loans={loans}
-            history={history}
-            refreshData={refreshData}
-          />
-        )}
+            {activeTab === 'dashboard' && (
+              <BentoDashboard
+                onOpenModal={(m) => setActiveModal(m)}
+                balances={balances}
+                depositAddresses={depositAddresses}
+                cards={cards}
+                loans={loans}
+                history={history}
+                refreshData={refreshData}
+              />
+            )}
 
-        {activeTab === 'cards' && (
-          <CardsView
-            cards={cards}
-            onOpenIssueModal={() => setActiveModal('issue_card')}
-            onOpenTestModal={() => setActiveModal('test_card')}
-          />
-        )}
+            {activeTab === 'cards' && (
+              <CardsView
+                cards={cards}
+                onOpenIssueModal={() => setActiveModal('issue_card')}
+                onOpenTestModal={() => setActiveModal('test_card')}
+              />
+            )}
 
-        {activeTab === 'loans' && (
-          <LoansView
-            loans={loans}
-            balances={balances}
-            onOpenLoanModal={() => setActiveModal('loan')}
-            refreshData={refreshData}
-          />
-        )}
+            {activeTab === 'loans' && (
+              <LoansView
+                loans={loans}
+                balances={balances}
+                onOpenLoanModal={() => setActiveModal('loan')}
+                refreshData={refreshData}
+              />
+            )}
 
-        {activeTab === 'marketplace' && (
-          <MarketplaceView
-            balances={balances}
-            onOpenConvertModal={() => setActiveModal('convert')}
-            onOpenMarketplaceModal={() => setActiveModal('marketplace')}
-          />
-        )}
+            {activeTab === 'marketplace' && (
+              <MarketplaceView
+                balances={balances}
+                onOpenConvertModal={() => setActiveModal('convert')}
+                onOpenMarketplaceModal={() => setActiveModal('marketplace')}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Command Palette */}
