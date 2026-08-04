@@ -16,8 +16,20 @@ export interface UserProfile {
   kycStatus: KycStatus;
   isTwoFactorEnabled: boolean;
   hasPasskey: boolean;
+  bankIdNumber: string;
+  referralCode: string;
+  referredBy?: string;
+  referralEarningsUSD?: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface KycSubmissionRequest {
+  cnicNumber: string;
+  cnicFrontBase64?: string;
+  cnicBackBase64?: string;
+  phoneSimVerifiedName: string;
+  faceScanBase64?: string;
 }
 
 // Double-Entry Ledger
@@ -36,7 +48,8 @@ export type LedgerRefType =
   | 'LOAN_REPAYMENT_FEE'
   | 'LOAN_LIQUIDATION'
   | 'MARKETPLACE_PURCHASE'
-  | 'P2P_TRANSFER';
+  | 'P2P_TRANSFER'
+  | 'REFERRAL_REWARD';
 
 export interface LedgerEntry {
   id: string;

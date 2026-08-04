@@ -19,6 +19,10 @@ export interface IUser extends Document {
   twoFactorEnabled: boolean;
   acceptedTerms: boolean;
   acceptedTermsAt?: Date;
+  bankIdNumber: string;
+  referralCode: string;
+  referredBy?: string;
+  referralEarningsUSD: number;
   passkeyCredentials: IPasskeyCredential[];
   createdAt: Date;
   updatedAt: Date;
@@ -43,6 +47,10 @@ const UserSchema = new Schema<IUser>(
     twoFactorEnabled: { type: Boolean, default: false },
     acceptedTerms: { type: Boolean, default: true },
     acceptedTermsAt: { type: Date, default: Date.now },
+    bankIdNumber: { type: String, unique: true, sparse: true },
+    referralCode: { type: String, unique: true, sparse: true },
+    referredBy: { type: String },
+    referralEarningsUSD: { type: Number, default: 0 },
     passkeyCredentials: [PasskeySchema],
   },
   { timestamps: true }

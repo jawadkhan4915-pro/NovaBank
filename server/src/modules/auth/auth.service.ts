@@ -8,7 +8,7 @@ import { AppError, UnauthorizedError, ConflictError, NotFoundError } from '../..
 import { UserRole } from '@novabank/shared';
 
 export class AuthService {
-  public static async register(data: { email: string; password: string; fullName: string; phone?: string; acceptedTerms?: boolean }) {
+  public static async register(data: { email: string; password: string; fullName: string; phone?: string; acceptedTerms?: boolean; referredBy?: string }) {
     if (data.acceptedTerms === false) {
       throw new AppError('You must accept the Terms of Service & Privacy Policy to register an account', 400, 'TERMS_REQUIRED');
     }
@@ -21,6 +21,14 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(data.password, salt);
 
+    const part1 = Math.floor(1000 + Math.random() * 9000);
+    const part2 = Math.floor(1000 + Math.random() * 9000);
+    const part3 = Math.floor(1000 + Math.random() * 9000);
+    const bankIdNumber = `NVB-${part1}-${part2}-${part3}`;
+
+    const refRand = Math.floor(100000 + Math.random() * 900000);
+    const referralCode = `REF-${refRand}`;
+
     const user = await User.create({
       email: data.email.toLowerCase(),
       passwordHash,
@@ -31,6 +39,10 @@ export class AuthService {
       twoFactorEnabled: false,
       acceptedTerms: true,
       acceptedTermsAt: new Date(),
+      bankIdNumber,
+      referralCode,
+      referredBy: data.referredBy || undefined,
+      referralEarningsUSD: 0,
       passkeyCredentials: [],
     });
 
@@ -150,7 +162,11 @@ export class AuthService {
       role: user.role,
       kycStatus: user.kycStatus,
       isTwoFactorEnabled: user.twoFactorEnabled,
-      hasPasskey: user.passkeyCredentials.length > 0,
+      hasPasskey: user.passkeyCredentials ? user.passkeyCredentials.length > 0 : false,
+      bankIdNumber: user.bankIdNumber || 'NVB-1000-0000-0000',
+      referralCode: user.referralCode || 'REF-000000',
+      referredBy: user.referredBy,
+      referralEarningsUSD: user.referralEarningsUSD || 0,
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
     };

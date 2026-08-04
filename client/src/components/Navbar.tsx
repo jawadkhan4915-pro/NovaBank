@@ -17,6 +17,7 @@ import {
   HelpCircle,
   FileText,
   MessageSquare,
+  Gift,
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -24,9 +25,18 @@ interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenAuth: (mode: 'login' | 'register') => void;
+  onOpenReferral?: () => void;
+  onOpenKyc?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveTab, onOpenAuth }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenCmd,
+  activeTab,
+  setActiveTab,
+  onOpenAuth,
+  onOpenReferral,
+  onOpenKyc,
+}) => {
   const { user, logout } = useAuthStore();
 
   const handleLogoClick = () => {
@@ -97,6 +107,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
             <kbd className="px-1.5 py-0.5 rounded bg-background text-xs font-mono border border-glass-border text-ink-muted">⌘K</kbd>
           </button>
 
+          {/* Invite Friend $2 Button */}
+          <button
+            onClick={() => {
+              if (!user) onOpenAuth('login');
+              else if (onOpenReferral) onOpenReferral();
+            }}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-gold/20 via-violet/20 to-gold/20 hover:from-gold/30 hover:to-violet/30 border border-gold/40 text-xs font-bold text-gold transition-all shadow-sm"
+          >
+            <Gift className="h-3.5 w-3.5 text-gold animate-pulse" />
+            <span>Invite & Earn $2</span>
+          </button>
+
           {user ? (
             <div className="flex items-center gap-2">
               <div
@@ -105,15 +127,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
               >
                 <UserIcon className="h-4 w-4 text-gold" />
                 <div className="text-left hidden sm:block">
-                  <div className="text-xs font-medium text-ink leading-tight">{user.fullName}</div>
-                  <div className="flex items-center gap-1 text-xs">
-                    {user.isTwoFactorEnabled ? (
-                      <span className="text-success flex items-center gap-0.5">
-                        <ShieldCheck className="h-3 w-3" /> 2FA Active
+                  <div className="text-xs font-medium text-ink leading-tight flex items-center gap-1.5">
+                    <span>{user.fullName}</span>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-gold/15 text-gold font-bold border border-gold/30">
+                      {user.bankIdNumber || 'NVB-8910'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[11px]">
+                    {user.kycStatus === 'VERIFIED' ? (
+                      <span className="text-success flex items-center gap-0.5 font-semibold">
+                        <ShieldCheck className="h-3 w-3" /> KYC Verified
                       </span>
                     ) : (
-                      <span className="text-danger flex items-center gap-0.5">
-                        <ShieldAlert className="h-3 w-3" /> 2FA Off
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onOpenKyc) onOpenKyc();
+                        }}
+                        className="text-gold hover:underline cursor-pointer flex items-center gap-0.5 font-semibold"
+                      >
+                        <ShieldAlert className="h-3 w-3 text-gold" /> Complete KYC
                       </span>
                     )}
                   </div>

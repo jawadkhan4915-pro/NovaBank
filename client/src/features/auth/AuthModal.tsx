@@ -16,11 +16,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   initialMode = 'login',
   onSuccess,
 }) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialRefCode = urlParams.get('ref') || '';
+
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
+  const [referredByCode, setReferredByCode] = useState(initialRefCode);
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [requires2FA, setRequires2FA] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -50,6 +54,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           fullName: fullName || 'Nova User',
           phone: phone || '+1 555 019 2831',
           acceptedTerms: true,
+          referredBy: referredByCode || undefined,
         });
 
         if (res.data.success) {
@@ -207,6 +212,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+1 555 019 2831"
                     className="w-full pl-9 pr-4 py-2.5 bg-background border border-glass-border rounded-xl text-xs text-ink placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold uppercase tracking-wider mb-1">
+                  Referral / Inviter Code (Optional)
+                </label>
+                <div className="relative">
+                  <Sparkles className="absolute left-3 top-3 h-4 w-4 text-gold" />
+                  <input
+                    type="text"
+                    value={referredByCode}
+                    onChange={(e) => setReferredByCode(e.target.value)}
+                    placeholder="REF-894270 or NVB-1089-4270-3541"
+                    className="w-full pl-9 pr-4 py-2.5 bg-background border border-gold/40 rounded-xl text-xs font-mono text-gold placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
                   />
                 </div>
               </div>

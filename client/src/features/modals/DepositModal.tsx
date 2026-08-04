@@ -51,6 +51,8 @@ export const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, dep
     }
   };
 
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentAddress)}`;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md">
       <div className="w-full max-w-md glass-hero rounded-2xl border border-glass-border p-6 shadow-2xl relative animate-in fade-in zoom-in-95">
@@ -64,7 +66,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, dep
           </div>
           <div>
             <h3 className="font-display font-bold text-lg text-ink">Deposit Crypto</h3>
-            <p className="text-xs text-ink-muted">Receive external transfers via deposit address</p>
+            <p className="text-xs text-ink-muted">Scan QR code or copy address to deposit funds</p>
           </div>
         </div>
 
@@ -85,16 +87,20 @@ export const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, dep
           ))}
         </div>
 
-        {/* QR & Address Card */}
+        {/* Dynamic QR & Address Card */}
         <div className="p-4 rounded-xl bg-background border border-glass-border flex flex-col items-center mb-5">
-          <div className="h-32 w-32 bg-white p-2 rounded-xl flex items-center justify-center mb-3">
-            <QrCode className="h-28 w-28 text-background" />
+          <div className="h-36 w-36 bg-white p-2 rounded-2xl flex items-center justify-center mb-3 shadow-md border border-gold/20">
+            <img
+              src={qrCodeUrl}
+              alt={`${selectedAsset} Deposit QR Code`}
+              className="h-full w-full object-contain rounded-lg"
+            />
           </div>
           <div className="w-full text-center">
-            <span className="text-xs text-ink-muted uppercase font-semibold">Your {selectedAsset} Address</span>
+            <span className="text-xs text-ink-muted uppercase font-semibold">Your Auto-Generated {selectedAsset} Address</span>
             <div className="mt-1 flex items-center justify-between p-2 rounded-xl bg-surface border border-glass-border">
               <span className="text-xs font-mono text-gold truncate max-w-[240px]">{currentAddress}</span>
-              <button onClick={handleCopy} className="p-1 text-ink-muted hover:text-ink">
+              <button onClick={handleCopy} className="p-1 text-ink-muted hover:text-ink" title="Copy Address">
                 {copied ? <Check className="h-4 w-4 text-success" /> : <Copy className="h-4 w-4" />}
               </button>
             </div>

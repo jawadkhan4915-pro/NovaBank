@@ -7,9 +7,16 @@ export class KycController {
   public static async submitKyc(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const userId = req.user!.userId;
-      const { documentType, documentNumber } = req.body;
+      const { cnicNumber, phoneSimVerifiedName, cnicFrontUrl, cnicBackUrl, faceScanUrl } = req.body;
 
-      const record = await KycService.submitKyc(userId, documentType, documentNumber);
+      const record = await KycService.submitKyc(
+        userId,
+        cnicNumber,
+        phoneSimVerifiedName,
+        cnicFrontUrl,
+        cnicBackUrl,
+        faceScanUrl
+      );
       const response: ApiResponse<typeof record> = {
         success: true,
         data: record,

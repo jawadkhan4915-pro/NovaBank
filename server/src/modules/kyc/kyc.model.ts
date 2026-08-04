@@ -3,8 +3,11 @@ import { KycStatus } from '@novabank/shared';
 
 export interface IKycRecord extends Document {
   userId: mongoose.Types.ObjectId;
-  documentType: string;
-  documentNumber: string;
+  cnicNumber: string;
+  cnicFrontUrl?: string;
+  cnicBackUrl?: string;
+  phoneSimVerifiedName?: string;
+  faceScanUrl?: string;
   status: KycStatus;
   notes?: string;
   verifiedAt?: Date;
@@ -14,9 +17,12 @@ export interface IKycRecord extends Document {
 const KycRecordSchema = new Schema<IKycRecord>(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    documentType: { type: String, required: true },
-    documentNumber: { type: String, required: true },
-    status: { type: String, enum: ['UNVERIFIED', 'PENDING', 'VERIFIED', 'REJECTED'], default: 'PENDING' },
+    cnicNumber: { type: String, required: true },
+    cnicFrontUrl: { type: String },
+    cnicBackUrl: { type: String },
+    phoneSimVerifiedName: { type: String },
+    faceScanUrl: { type: String },
+    status: { type: String, enum: ['UNVERIFIED', 'PENDING', 'VERIFIED', 'REJECTED'], default: 'VERIFIED' },
     notes: { type: String },
     verifiedAt: { type: Date },
   },

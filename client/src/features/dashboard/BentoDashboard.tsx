@@ -13,12 +13,15 @@ import {
   Zap,
   Plus,
   RefreshCw,
+  Gift,
+  ShieldAlert,
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { CardDetails, LoanDetails, LedgerEntry, CryptoCurrency } from '@novabank/shared';
 import { SpotlightCard } from '../../components/SpotlightCard';
 import { TiltCard } from '../../components/TiltCard';
 import { AnimatedCounter } from '../../components/AnimatedCounter';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface BentoDashboardProps {
   onOpenModal: (modalName: string) => void;
@@ -28,6 +31,8 @@ interface BentoDashboardProps {
   loans: LoanDetails[];
   history: LedgerEntry[];
   refreshData: () => void;
+  onOpenReferral?: () => void;
+  onOpenKyc?: () => void;
 }
 
 export const BentoDashboard: React.FC<BentoDashboardProps> = ({
@@ -37,7 +42,10 @@ export const BentoDashboard: React.FC<BentoDashboardProps> = ({
   loans,
   history,
   refreshData,
+  onOpenReferral,
+  onOpenKyc,
 }) => {
+  const { user } = useAuthStore();
   // Calculate total portfolio estimated USD value using live rates
   const rates: Record<CryptoCurrency, number> = { BTC: 65000, ETH: 3500, BNB: 580, SOL: 145, BCH: 450 };
   const cryptoUSD =
@@ -81,11 +89,26 @@ export const BentoDashboard: React.FC<BentoDashboardProps> = ({
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-ink tracking-tight flex items-center gap-2">
             Banking Dashboard
             <span className="h-2.5 w-2.5 rounded-full bg-success animate-pulse" title="System Live" />
+            {user?.bankIdNumber && (
+              <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-gold/15 text-gold border border-gold/30">
+                Bank ID: {user.bankIdNumber}
+              </span>
+            )}
           </h1>
           <p className="text-xs text-ink-muted">Crypto-fiat ledger reconciled in real time</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {onOpenReferral && (
+            <button
+              onClick={onOpenReferral}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-gold/20 via-violet/20 to-gold/20 hover:from-gold/30 hover:to-violet/30 border border-gold/40 text-xs font-bold text-gold transition-all shadow-sm"
+            >
+              <Gift className="h-4 w-4 text-gold animate-bounce" />
+              <span>Invite Friends ($2 Gift)</span>
+            </button>
+          )}
+
           <button
             onClick={() => onOpenModal('deposit')}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gold hover:bg-gold-dim text-background text-xs font-bold transition-all shadow-gold-glow"

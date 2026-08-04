@@ -23,6 +23,8 @@ import { IssueCardModal } from './features/modals/IssueCardModal';
 import { CardChargeModal } from './features/modals/CardChargeModal';
 import { LoanModal } from './features/modals/LoanModal';
 import { MarketplaceModal } from './features/modals/MarketplaceModal';
+import { KycModal } from './features/modals/KycModal';
+import { ReferralModal } from './features/modals/ReferralModal';
 import { ShieldAlert, LogIn, UserPlus } from 'lucide-react';
 import { CardDetails, LoanDetails, LedgerEntry } from '@novabank/shared';
 
@@ -145,6 +147,8 @@ export function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenAuth={handleOpenAuth}
+        onOpenReferral={() => setActiveModal('referral')}
+        onOpenKyc={() => setActiveModal('kyc')}
       />
 
       {/* Main Content Area with Framer Motion AnimatePresence */}
@@ -178,6 +182,8 @@ export function App() {
                 loans={loans}
                 history={history}
                 refreshData={refreshData}
+                onOpenReferral={() => setActiveModal('referral')}
+                onOpenKyc={() => setActiveModal('kyc')}
               />
             )}
 
@@ -282,6 +288,15 @@ export function App() {
         onClose={() => setActiveModal(null)}
         balances={balances}
         onSuccess={refreshData}
+      />
+      <KycModal
+        isOpen={activeModal === 'kyc'}
+        onClose={() => setActiveModal(null)}
+        onSuccess={refreshData}
+      />
+      <ReferralModal
+        isOpen={activeModal === 'referral'}
+        onClose={() => setActiveModal(null)}
       />
     </div>
   );
