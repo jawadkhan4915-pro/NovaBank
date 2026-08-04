@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
+import { createSecurityHeaders } from './security';
 
 export const api = axios.create({
   baseURL: '/api/v1',
@@ -13,6 +14,13 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  // Attach cryptographic anti-replay & request signature headers
+  const securityHeaders = createSecurityHeaders();
+  config.headers['X-Timestamp'] = securityHeaders['X-Timestamp'];
+  config.headers['X-Nonce'] = securityHeaders['X-Nonce'];
+  config.headers['X-Tx-Signature'] = securityHeaders['X-Tx-Signature'];
+
   return config;
 });
 
@@ -25,4 +33,3 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-

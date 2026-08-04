@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from './store/useAuthStore';
 import { api } from './lib/api';
+import { SessionSecurityManager } from './lib/security';
 import { Navbar } from './components/Navbar';
 import { CommandPalette } from './components/CommandPalette';
 import { AmbientCanvas } from './components/AmbientCanvas';
@@ -45,6 +46,19 @@ export function App() {
   const [cards, setCards] = useState<CardDetails[]>([]);
   const [loans, setLoans] = useState<LoanDetails[]>([]);
   const [history, setHistory] = useState<LedgerEntry[]>([]);
+
+  // Session Security & Inactivity Timeout Manager
+  useEffect(() => {
+    if (token) {
+      SessionSecurityManager.initialize(() => {
+        logout();
+        setActiveTab('landing');
+      });
+    }
+    return () => {
+      SessionSecurityManager.clear();
+    };
+  }, [token, logout]);
 
   // Restore Authenticated User Session on Mount
   useEffect(() => {

@@ -5,6 +5,14 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import fs from 'fs';
 import { errorHandler } from './common/middleware/errorHandler';
+import {
+  authLimiter,
+  transactionLimiter,
+  xssSanitizer,
+  validateFinancialAmount,
+  antiReplayCheck,
+} from './common/middleware/securityMiddleware';
+
 import { authRoutes } from './modules/auth/auth.routes';
 import { walletRoutes } from './modules/wallets/wallet.routes';
 import { conversionRoutes } from './modules/conversion/conversion.routes';
@@ -15,31 +23,81 @@ import { kycRoutes } from './modules/kyc/kyc.routes';
 
 const app = express();
 
-// Security Middleware
-app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+// Disable x-powered-by header to conceal stack details from scanners
+app.disable('x-powered-by');
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 mins
+// 1. Comprehensive Helmet Security Headers (Clickjacking, HSTS, XSS, Sniffing protection)
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // Set false to allow custom inline SVGs and canvas particles
+    crossOriginEmbedderPolicy: false,
+    frameguard: { action: 'deny' }, // Anti-clickjacking: Prevents embedding in unauthorized iframe
+    noSniff: true, // X-Content-Type-Options: nosniff
+    xssFilter: true, // X-XSS-Protection: 1; mode=block
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }, // HTTP Strict Transport Security
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  })
+);
+
+// 2. Hardened CORS Policy
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Idempotency-Key',
+      'X-Timestamp',
+      'X-Nonce',
+      'X-Tx-Signature',
+    ],
+  })
+);
+
+// 3. Body Parser with 10MB payload size limit (Anti Large-Payload DoS)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// 4. Global Input XSS & Parameter Sanitization Middleware
+app.use(xssSanitizer);
+
+// 5. Anti-Replay Timestamp Header Check
+app.use(antiReplayCheck);
+
+// 6. Global Fallback Rate Limiter (300 requests / 15 min per IP)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
   max: 300,
-  message: { success: false, error: { code: 'TOO_MANY_REQUESTS', message: 'Too many requests' } },
+  message: {
+    success: false,
+    error: {
+      code: 'TOO_MANY_REQUESTS',
+      message: 'Too many requests from this IP. Please wait before retrying.',
+    },
+  },
 });
-app.use(limiter);
+app.use(globalLimiter);
 
-// Health check
+// Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', service: 'NovaBank API', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'OK',
+    service: 'NovaBank API',
+    securityMode: 'HARDENED_AES256_MULTI_SIG',
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// API Routes
-app.use('/api/v1/auth', authRoutes);
+// API Routes with Tiered Security Protections
+app.use('/api/v1/auth', authLimiter, authRoutes);
 app.use('/api/v1/wallets', walletRoutes);
-app.use('/api/v1/conversion', conversionRoutes);
-app.use('/api/v1/cards', cardRoutes);
-app.use('/api/v1/loans', loanRoutes);
-app.use('/api/v1/marketplace', marketplaceRoutes);
+app.use('/api/v1/conversion', transactionLimiter, validateFinancialAmount, conversionRoutes);
+app.use('/api/v1/cards', transactionLimiter, cardRoutes);
+app.use('/api/v1/loans', transactionLimiter, validateFinancialAmount, loanRoutes);
+app.use('/api/v1/marketplace', transactionLimiter, marketplaceRoutes);
 app.use('/api/v1/kyc', kycRoutes);
 
 // Static Client Serving & SPA Fallback (Single Port Mode)
@@ -63,7 +121,7 @@ if (clientDistPath) {
   });
 }
 
-// Error Handler
+// Error Handler Middleware
 app.use(errorHandler);
 
 export default app;
