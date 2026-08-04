@@ -3,7 +3,11 @@ import { User, Shield, Lock, KeyRound, Bell, CheckCircle2, AlertTriangle, Smartp
 import { useAuthStore } from '../../store/useAuthStore';
 import { SpotlightCard } from '../../components/SpotlightCard';
 
-export const SettingsView: React.FC = () => {
+interface SettingsViewProps {
+  onOpenAuth?: (mode: 'login' | 'register') => void;
+}
+
+export const SettingsView: React.FC<SettingsViewProps> = ({ onOpenAuth }) => {
   const { user } = useAuthStore();
   const [twoFactor, setTwoFactor] = useState(user?.isTwoFactorEnabled || false);
   const [currentPass, setCurrentPass] = useState('');
@@ -14,6 +18,10 @@ export const SettingsView: React.FC = () => {
 
   const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      if (onOpenAuth) onOpenAuth('login');
+      return;
+    }
     if (newPass !== confirmPass) {
       setMsg('Error: New passwords do not match');
       return;
@@ -38,7 +46,31 @@ export const SettingsView: React.FC = () => {
           </h1>
           <p className="text-xs text-ink-muted">Manage profile details, 2FA TOTP authentication, and preferences</p>
         </div>
+
+        {!user && (
+          <button
+            onClick={() => onOpenAuth && onOpenAuth('login')}
+            className="px-4 py-2 rounded-xl bg-gold hover:bg-gold-dim text-background text-xs font-bold transition-all shadow-gold-glow"
+          >
+            Sign In to Manage Settings
+          </button>
+        )}
       </div>
+
+      {!user && (
+        <div className="p-4 rounded-2xl bg-gold/10 border border-gold/30 text-ink text-xs flex items-center justify-between gap-3">
+          <div>
+            <span className="font-bold text-gold">Guest Preview Mode: </span>
+            You are browsing settings in preview mode. Sign in to configure 2FA TOTP, update passwords, and manage personal data.
+          </div>
+          <button
+            onClick={() => onOpenAuth && onOpenAuth('login')}
+            className="px-3.5 py-1.5 rounded-xl bg-gold text-background font-bold text-xs shrink-0 shadow-sm"
+          >
+            Sign In Now
+          </button>
+        </div>
+      )}
 
       {/* Sub Navigation Tabs */}
       <div className="flex bg-surface p-1 rounded-xl border border-glass-border w-full max-w-md">

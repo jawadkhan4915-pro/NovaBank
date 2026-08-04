@@ -161,104 +161,68 @@ export function App() {
               <LandingPage
                 onOpenAuth={handleOpenAuth}
                 onLaunchApp={() => {
-                  if (!token || !user) handleOpenAuth('login');
-                  else setActiveTab('dashboard');
+                  setActiveTab('dashboard');
                 }}
               />
             )}
 
-            {isProtectedTab && (!token || !user) ? (
-              <div className="py-16 px-4 flex items-center justify-center">
-                <div className="max-w-md w-full glass-hero p-8 rounded-3xl border border-gold/30 text-center space-y-6 shadow-2xl">
-                  <div className="h-16 w-16 mx-auto rounded-2xl bg-gold/15 text-gold flex items-center justify-center border border-gold/30">
-                    <ShieldAlert className="h-8 w-8 text-gold" />
-                  </div>
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-bold font-display text-ink">Authentication Required</h2>
-                    <p className="text-xs text-ink-muted leading-relaxed">
-                      You must be signed in to your NovaBank account to view this section and execute operations.
-                    </p>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <button
-                      onClick={() => handleOpenAuth('login')}
-                      className="flex-1 py-3 rounded-xl bg-gold hover:bg-gold-dim text-background font-bold text-xs shadow-gold-glow transition-all flex items-center justify-center gap-2"
-                    >
-                      <LogIn className="h-4 w-4" />
-                      <span>Sign In</span>
-                    </button>
-                    <button
-                      onClick={() => handleOpenAuth('register')}
-                      className="flex-1 py-3 rounded-xl bg-surface hover:bg-surface-hover border border-glass-border text-ink font-bold text-xs transition-all flex items-center justify-center gap-2"
-                    >
-                      <UserPlus className="h-4 w-4 text-violet" />
-                      <span>Register</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <>
-                {activeTab === 'dashboard' && (
-                  <BentoDashboard
-                    onOpenModal={(m) => {
-                      if (!token || !user) handleOpenAuth('login');
-                      else setActiveModal(m);
-                    }}
-                    balances={balances}
-                    depositAddresses={depositAddresses}
-                    cards={cards}
-                    loans={loans}
-                    history={history}
-                    refreshData={refreshData}
-                  />
-                )}
-
-                {activeTab === 'cards' && (
-                  <CardsView
-                    cards={cards}
-                    onOpenIssueModal={() => {
-                      if (!token || !user) handleOpenAuth('login');
-                      else setActiveModal('issue_card');
-                    }}
-                    onOpenTestModal={() => {
-                      if (!token || !user) handleOpenAuth('login');
-                      else setActiveModal('test_card');
-                    }}
-                  />
-                )}
-
-                {activeTab === 'loans' && (
-                  <LoansView
-                    loans={loans}
-                    balances={balances}
-                    onOpenLoanModal={() => {
-                      if (!token || !user) handleOpenAuth('login');
-                      else setActiveModal('loan');
-                    }}
-                    refreshData={refreshData}
-                  />
-                )}
-
-                {activeTab === 'marketplace' && (
-                  <MarketplaceView
-                    balances={balances}
-                    onOpenConvertModal={() => {
-                      if (!token || !user) handleOpenAuth('login');
-                      else setActiveModal('convert');
-                    }}
-                    onOpenMarketplaceModal={() => {
-                      if (!token || !user) handleOpenAuth('login');
-                      else setActiveModal('marketplace');
-                    }}
-                  />
-                )}
-
-                {activeTab === 'settings' && <SettingsView />}
-              </>
+            {activeTab === 'dashboard' && (
+              <BentoDashboard
+                onOpenModal={(m) => {
+                  if (!token || !user) handleOpenAuth('login');
+                  else setActiveModal(m);
+                }}
+                balances={balances}
+                depositAddresses={depositAddresses}
+                cards={cards}
+                loans={loans}
+                history={history}
+                refreshData={refreshData}
+              />
             )}
 
-            {activeTab === 'support' && <SupportView />}
+            {activeTab === 'cards' && (
+              <CardsView
+                cards={cards}
+                onOpenIssueModal={() => {
+                  if (!token || !user) handleOpenAuth('login');
+                  else setActiveModal('issue_card');
+                }}
+                onOpenTestModal={() => {
+                  if (!token || !user) handleOpenAuth('login');
+                  else setActiveModal('test_card');
+                }}
+              />
+            )}
+
+            {activeTab === 'loans' && (
+              <LoansView
+                loans={loans}
+                balances={balances}
+                onOpenLoanModal={() => {
+                  if (!token || !user) handleOpenAuth('login');
+                  else setActiveModal('loan');
+                }}
+                refreshData={refreshData}
+              />
+            )}
+
+            {activeTab === 'marketplace' && (
+              <MarketplaceView
+                balances={balances}
+                onOpenConvertModal={() => {
+                  if (!token || !user) handleOpenAuth('login');
+                  else setActiveModal('convert');
+                }}
+                onOpenMarketplaceModal={() => {
+                  if (!token || !user) handleOpenAuth('login');
+                  else setActiveModal('marketplace');
+                }}
+              />
+            )}
+
+            {activeTab === 'settings' && <SettingsView onOpenAuth={handleOpenAuth} />}
+            {activeTab === 'support' && <SupportView onOpenAuth={handleOpenAuth} />}
             {activeTab === 'terms' && <TermsView />}
             {activeTab === 'faqs' && <FaqsView />}
           </motion.div>

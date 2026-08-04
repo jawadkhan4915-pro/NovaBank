@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { HelpCircle, AlertOctagon, Send, PhoneCall, ShieldAlert, CheckCircle2, MessageSquare } from 'lucide-react';
 import { SpotlightCard } from '../../components/SpotlightCard';
+import { useAuthStore } from '../../store/useAuthStore';
 
-export const SupportView: React.FC = () => {
+interface SupportViewProps {
+  onOpenAuth?: (mode: 'login' | 'register') => void;
+}
+
+export const SupportView: React.FC<SupportViewProps> = ({ onOpenAuth }) => {
+  const { user } = useAuthStore();
   const [frozen, setFrozen] = useState(false);
   const [category, setCategory] = useState('Cards');
   const [subject, setSubject] = useState('');
@@ -11,10 +17,22 @@ export const SupportView: React.FC = () => {
 
   const handleSubmitTicket = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      if (onOpenAuth) onOpenAuth('login');
+      return;
+    }
     setSubmitted(true);
     setSubject('');
     setMessage('');
     setTimeout(() => setSubmitted(false), 4000);
+  };
+
+  const handleToggleFreeze = () => {
+    if (!user) {
+      if (onOpenAuth) onOpenAuth('login');
+      return;
+    }
+    setFrozen(!frozen);
   };
 
   return (
@@ -55,7 +73,7 @@ export const SupportView: React.FC = () => {
           </div>
 
           <button
-            onClick={() => setFrozen(!frozen)}
+            onClick={handleToggleFreeze}
             className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center gap-2 ${
               frozen
                 ? 'bg-success text-background hover:bg-success/90'

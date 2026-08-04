@@ -35,23 +35,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
   };
 
   const navItems = [
-    { id: 'landing', label: 'Home', icon: Home, isProtected: false },
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, isProtected: true },
-    { id: 'cards', label: 'Cards', icon: CreditCard, isProtected: true },
-    { id: 'loans', label: 'Loans', icon: Landmark, isProtected: true },
-    { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag, isProtected: true },
-    { id: 'support', label: 'Support', icon: MessageSquare, isProtected: false },
-    { id: 'faqs', label: 'Help Center', icon: HelpCircle, isProtected: false },
-    { id: 'settings', label: 'Settings', icon: Settings, isProtected: true },
+    { id: 'landing', label: 'Home', icon: Home },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'cards', label: 'Cards', icon: CreditCard },
+    { id: 'loans', label: 'Loans', icon: Landmark },
+    { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
   ];
-
-  const handleNavClick = (item: { id: string; isProtected: boolean }) => {
-    if (item.isProtected && !user) {
-      onOpenAuth('login');
-    } else {
-      setActiveTab(item.id);
-    }
-  };
 
   return (
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-glass-border px-4 lg:px-8 py-3.5 backdrop-blur-xl">
@@ -83,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
             return (
               <button
                 key={item.id}
-                onClick={() => handleNavClick(item)}
+                onClick={() => setActiveTab(item.id)}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                   isActive
                     ? 'bg-gold/15 text-gold border border-gold/30 shadow-sm'
@@ -172,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCmd, activeTab, setActiveT
           return (
             <button
               key={item.id}
-              onClick={() => handleNavClick(item)}
+              onClick={() => setActiveTab(item.id)}
               className={`min-h-[44px] px-2.5 py-1 rounded-xl flex flex-col items-center justify-center gap-0.5 text-xs font-semibold whitespace-nowrap transition-all ${
                 isActive ? 'text-gold bg-gold/15 border border-gold/30' : 'text-ink-muted hover:text-ink'
               }`}
