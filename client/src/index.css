@@ -28,12 +28,14 @@
   .text-gradient-gold {
     background: linear-gradient(135deg, #F2F0EA 0%, #C9A25C 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .text-gradient-violet {
     background: linear-gradient(135deg, #F2F0EA 0%, #6C5CE7 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 }
