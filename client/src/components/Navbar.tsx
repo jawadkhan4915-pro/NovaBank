@@ -67,9 +67,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <span className="font-display font-bold text-lg tracking-tight text-ink flex items-center gap-2">
               NovaBank
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded-full bg-violet/20 text-violet border border-violet/30">
-                PRO 2026
-              </span>
             </span>
           </div>
         </div>
