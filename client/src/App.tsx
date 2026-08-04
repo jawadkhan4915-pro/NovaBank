@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from './store/useAuthStore';
 import { api } from './lib/api';
 import { Navbar } from './components/Navbar';
-import { LiveCryptoTicker } from './components/LiveCryptoTicker';
 import { CommandPalette } from './components/CommandPalette';
 import { AmbientCanvas } from './components/AmbientCanvas';
 import { Footer } from './components/Footer';
@@ -148,16 +147,6 @@ export function App() {
         onOpenReferral={() => setActiveModal('referral')}
         onOpenKyc={() => setActiveModal('kyc')}
       />
-
-      {/* Live Crypto Price Ticker (Rendered on non-landing views) */}
-      {activeTab !== 'landing' && (
-        <LiveCryptoTicker
-          onOpenConvert={() => {
-            if (!token || !user) handleOpenAuth('login');
-            else setActiveModal('convert');
-          }}
-        />
-      )}
 
       {/* Main Content Area with Framer Motion AnimatePresence */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8">
