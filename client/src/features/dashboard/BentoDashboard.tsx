@@ -7,20 +7,16 @@ import {
   ArrowRightLeft,
   CreditCard,
   Landmark,
-  ShoppingBag,
-  TrendingUp,
   ShieldCheck,
-  Zap,
-  Plus,
   RefreshCw,
   Gift,
-  ShieldAlert,
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { CardDetails, LoanDetails, LedgerEntry, CryptoCurrency } from '@novabank/shared';
 import { SpotlightCard } from '../../components/SpotlightCard';
 import { TiltCard } from '../../components/TiltCard';
 import { AnimatedCounter } from '../../components/AnimatedCounter';
+import { LiveAssetBalancesCard } from '../../components/LiveAssetBalancesCard';
 import { useAuthStore } from '../../store/useAuthStore';
 
 interface BentoDashboardProps {
@@ -46,20 +42,28 @@ export const BentoDashboard: React.FC<BentoDashboardProps> = ({
   onOpenKyc,
 }) => {
   const { user } = useAuthStore();
+  const [liveRates, setLiveRates] = useState<Record<string, number>>({
+    BTC: 65420,
+    ETH: 3512,
+    BNB: 584,
+    SOL: 148,
+    BCH: 452,
+    USD: 1,
+  });
+
   // Calculate total portfolio estimated USD value using live rates
-  const rates: Record<CryptoCurrency, number> = { BTC: 65000, ETH: 3500, BNB: 580, SOL: 145, BCH: 450 };
   const cryptoUSD =
-    (balances.BTC || 0) * rates.BTC +
-    (balances.ETH || 0) * rates.ETH +
-    (balances.BNB || 0) * rates.BNB +
-    (balances.SOL || 0) * rates.SOL +
-    (balances.BCH || 0) * rates.BCH;
+    (balances.BTC || 0) * (liveRates.BTC || 65420) +
+    (balances.ETH || 0) * (liveRates.ETH || 3512) +
+    (balances.BNB || 0) * (liveRates.BNB || 584) +
+    (balances.SOL || 0) * (liveRates.SOL || 148) +
+    (balances.BCH || 0) * (liveRates.BCH || 452);
   const totalPortfolioUSD = Math.round(((balances.USD || 0) + cryptoUSD) * 100) / 100;
 
   const activeLoan = loans[0];
   const activeCard = cards[0];
 
-  // Helper for Loan LTV Risk Threshold Label (UX Issue #7 Fix)
+  // Helper for Loan LTV Risk Threshold Label
   const getLtvStatus = (ltv: number) => {
     if (ltv <= 0.5) return { label: 'Healthy (<50%)', class: 'text-success bg-success/20 border-success/30', bar: 'bg-success' };
     if (ltv <= 0.75) return { label: 'Watch (50-75%)', class: 'text-gold bg-gold/20 border-gold/30', bar: 'bg-gold' };
@@ -279,39 +283,17 @@ export const BentoDashboard: React.FC<BentoDashboardProps> = ({
           </SpotlightCard>
         </motion.div>
 
-        {/* Bento Box 4: Multi-Asset Wallet Grid (Span 2) */}
-        <motion.div variants={itemVariants} className="md:col-span-2">
-          <SpotlightCard className="p-5 space-y-3">
-            <div className="flex items-center justify-between text-xs font-bold text-ink">
-              <span>Multi-Currency Asset Balances</span>
-              <button
-                onClick={() => onOpenModal('deposit')}
-                className="text-xs text-gold font-bold hover:underline flex items-center gap-1"
-              >
-                Deposit Assets <ArrowDownRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {['USD', 'BTC', 'ETH', 'BNB', 'SOL', 'BCH'].map((asset) => (
-                <div key={asset} className="p-3 rounded-xl bg-background border border-glass-border flex justify-between items-center">
-                  <div>
-                    <div className="text-xs font-bold text-ink">{asset}</div>
-                    <div className="text-xs font-mono text-gold mt-0.5">
-                      <AnimatedCounter value={balances[asset] || 0} decimals={asset === 'USD' ? 2 : 4} />
-                    </div>
-                  </div>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-surface border border-glass-border text-ink-muted font-mono font-bold">
-                    {asset === 'USD' ? '$1.00' : `$${rates[asset as CryptoCurrency] || 1}`}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </SpotlightCard>
+        {/* Bento Box 4: Multi-Asset Wallet Grid with Live Rates & Cards */}
+        <motion.div variants={itemVariants} className="md:col-span-3 lg:col-span-4">
+          <LiveAssetBalancesCard
+            balances={balances}
+            onOpenModal={onOpenModal}
+            onRatesUpdated={(rates) => setLiveRates(rates)}
+          />
         </motion.div>
 
-        {/* Bento Box 5: Live Double-Entry Ledger Feed (Span 2) */}
-        <motion.div variants={itemVariants} className="md:col-span-2">
+        {/* Bento Box 5: Live Double-Entry Ledger Feed */}
+        <motion.div variants={itemVariants} className="md:col-span-3 lg:col-span-4">
           <SpotlightCard className="p-5 space-y-3">
             <div className="flex items-center justify-between text-xs font-bold text-ink">
               <span className="flex items-center gap-1.5">
