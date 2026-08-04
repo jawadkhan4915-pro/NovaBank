@@ -17,6 +17,8 @@ export interface IUser extends Document {
   kycStatus: KycStatus;
   twoFactorSecret?: string;
   twoFactorEnabled: boolean;
+  acceptedTerms: boolean;
+  acceptedTermsAt?: Date;
   passkeyCredentials: IPasskeyCredential[];
   createdAt: Date;
   updatedAt: Date;
@@ -39,6 +41,8 @@ const UserSchema = new Schema<IUser>(
     kycStatus: { type: String, enum: ['UNVERIFIED', 'PENDING', 'VERIFIED', 'REJECTED'], default: 'UNVERIFIED' },
     twoFactorSecret: { type: String },
     twoFactorEnabled: { type: Boolean, default: false },
+    acceptedTerms: { type: Boolean, default: true },
+    acceptedTermsAt: { type: Date, default: Date.now },
     passkeyCredentials: [PasskeySchema],
   },
   { timestamps: true }

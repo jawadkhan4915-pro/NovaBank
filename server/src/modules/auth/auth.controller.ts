@@ -6,8 +6,8 @@ import { ApiResponse } from '@novabank/shared';
 export class AuthController {
   public static async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, password, fullName, phone } = req.body;
-      const result = await AuthService.register({ email, password, fullName, phone });
+      const { email, password, fullName, phone, acceptedTerms } = req.body;
+      const result = await AuthService.register({ email, password, fullName, phone, acceptedTerms });
       
       const response: ApiResponse<typeof result> = {
         success: true,

@@ -23,6 +23,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [phone, setPhone] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [requires2FA, setRequires2FA] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -37,11 +38,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     try {
       if (mode === 'register') {
+        if (!acceptedTerms) {
+          setErrorMsg('You must accept the Terms of Service & Privacy Policy to register.');
+          setLoading(false);
+          return;
+        }
+
         const res = await api.post('/auth/register', {
           email,
           password,
           fullName: fullName || 'Nova User',
           phone: phone || '+1 555 019 2831',
+          acceptedTerms: true,
         });
 
         if (res.data.success) {
@@ -256,6 +264,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   className="w-full pl-9 pr-4 py-2.5 bg-background border border-gold/50 rounded-xl text-xs text-ink font-mono placeholder:text-ink-faint focus:outline-none focus:border-gold transition-all"
                 />
               </div>
+            </div>
+          )}
+
+          {mode === 'register' && (
+            <div className="flex items-start gap-2.5 pt-1 pb-1">
+              <input
+                type="checkbox"
+                id="termsCheckbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded bg-background border-glass-border text-gold focus:ring-gold focus:ring-offset-0 cursor-pointer accent-gold"
+              />
+              <label htmlFor="termsCheckbox" className="text-xs text-ink-muted leading-relaxed cursor-pointer select-none">
+                I have read and agree to the compulsory{' '}
+                <span className="text-gold font-semibold">Terms of Service</span> and{' '}
+                <span className="text-violet font-semibold">Privacy Policy</span>.
+              </label>
             </div>
           )}
 

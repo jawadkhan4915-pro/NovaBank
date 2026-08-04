@@ -8,7 +8,11 @@ import { AppError, UnauthorizedError, ConflictError, NotFoundError } from '../..
 import { UserRole } from '@novabank/shared';
 
 export class AuthService {
-  public static async register(data: { email: string; password: string; fullName: string; phone?: string }) {
+  public static async register(data: { email: string; password: string; fullName: string; phone?: string; acceptedTerms?: boolean }) {
+    if (data.acceptedTerms === false) {
+      throw new AppError('You must accept the Terms of Service & Privacy Policy to register an account', 400, 'TERMS_REQUIRED');
+    }
+
     const existing = await User.findOne({ email: data.email.toLowerCase() });
     if (existing) {
       throw new ConflictError('User with this email already exists');
@@ -25,6 +29,8 @@ export class AuthService {
       role: 'USER',
       kycStatus: 'UNVERIFIED',
       twoFactorEnabled: false,
+      acceptedTerms: true,
+      acceptedTermsAt: new Date(),
       passkeyCredentials: [],
     });
 
