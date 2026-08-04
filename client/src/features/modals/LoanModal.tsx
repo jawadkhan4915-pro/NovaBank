@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Landmark, Percent, ShieldCheck, AlertCircle } from 'lucide-react';
+import { X, Landmark, Percent, ShieldCheck, ShieldAlert, AlertCircle } from 'lucide-react';
 import { CryptoCurrency, LoanDetails } from '@novabank/shared';
 import { api } from '../../lib/api';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface LoanModalProps {
   isOpen: boolean;
@@ -9,9 +10,18 @@ interface LoanModalProps {
   balances: Record<string, number>;
   activeLoans: LoanDetails[];
   onSuccess: () => void;
+  onOpenKyc?: () => void;
 }
 
-export const LoanModal: React.FC<LoanModalProps> = ({ isOpen, onClose, balances, activeLoans, onSuccess }) => {
+export const LoanModal: React.FC<LoanModalProps> = ({
+  isOpen,
+  onClose,
+  balances,
+  activeLoans,
+  onSuccess,
+  onOpenKyc,
+}) => {
+  const { user } = useAuthStore();
   const [tab, setTab] = useState<'apply' | 'repay'>('apply');
 
   // Application State
@@ -20,12 +30,15 @@ export const LoanModal: React.FC<LoanModalProps> = ({ isOpen, onClose, balances,
   const [requestedUSD, setRequestedUSD] = useState('15000');
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
+  const [kycError, setKycError] = useState('');
 
   // Repayment State
   const [selectedLoanId, setSelectedLoanId] = useState<string>(activeLoans[0]?.id || '');
   const [repaymentUSD, setRepaymentUSD] = useState('1000');
 
   if (!isOpen) return null;
+
+  const isKycVerified = user?.kycStatus === 'VERIFIED';
 
   // Mock live rates for LTV preview calculation
   const mockRates: Record<CryptoCurrency, number> = { BTC: 65000, ETH: 3500, BNB: 580, SOL: 145, BCH: 450 };
@@ -36,9 +49,15 @@ export const LoanModal: React.FC<LoanModalProps> = ({ isOpen, onClose, balances,
   const maxAllowedUSD = Math.floor(colVal * 0.50); // 50% max LTV limit
 
   const handleApplyLoan = async () => {
+    if (!isKycVerified) {
+      setKycError('KYC Verification Required: Crypto collateralized loan origination requires verified identity.');
+      return;
+    }
+
     try {
       setLoading(true);
       setMsg('');
+      setKycError('');
       const res = await api.post('/loans/apply', {
         collateralAsset,
         collateralAmount: parseFloat(collateralAmount),
@@ -64,6 +83,7 @@ export const LoanModal: React.FC<LoanModalProps> = ({ isOpen, onClose, balances,
     try {
       setLoading(true);
       setMsg('');
+      setKycError('');
       const res = await api.post('/loans/repay', {
         loanId: selectedLoanId || activeLoans[0]?.id,
         repaymentUSD: parseFloat(repaymentUSD),
@@ -100,6 +120,38 @@ export const LoanModal: React.FC<LoanModalProps> = ({ isOpen, onClose, balances,
             <p className="text-xs text-ink-muted">Lock crypto collateral, receive instant USD without selling</p>
           </div>
         </div>
+
+        {/* KYC Requirement Missing Alert */}
+        {!isKycVerified && (
+          <div className="mb-4 p-3.5 rounded-xl bg-danger/15 border border-danger/40 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-danger font-bold">
+              <ShieldAlert className="h-4 w-4" />
+              <span>KYC Requirement Missing</span>
+            </div>
+            <p className="text-ink-muted text-[11px] leading-relaxed">
+              Borrowing funds requires Tier-3 identity verification. Complete CNIC, SIM & Face Scan to unlock loans.
+            </p>
+            {onOpenKyc && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenKyc();
+                }}
+                className="w-full py-2 rounded-lg bg-gold hover:bg-gold-dim text-background font-bold text-xs transition-all shadow-sm"
+              >
+                Complete KYC Verification Now
+              </button>
+            )}
+          </div>
+        )}
+
+        {kycError && (
+          <div className="mb-4 p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <span>{kycError}</span>
+          </div>
+        )}
 
         {/* Tab Switcher */}
         <div className="flex bg-surface p-1 rounded-xl border border-glass-border mb-5">

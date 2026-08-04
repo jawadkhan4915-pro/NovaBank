@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from './store/useAuthStore';
 import { api } from './lib/api';
 import { Navbar } from './components/Navbar';
+import { LiveCryptoTicker } from './components/LiveCryptoTicker';
 import { CommandPalette } from './components/CommandPalette';
 import { AmbientCanvas } from './components/AmbientCanvas';
 import { Footer } from './components/Footer';
@@ -127,8 +128,6 @@ export function App() {
     else if (action === 'faqs') setActiveTab('faqs');
   };
 
-  const isProtectedTab = ['dashboard', 'cards', 'loans', 'marketplace', 'settings'].includes(activeTab);
-
   return (
     <div className="relative min-h-screen bg-background text-ink flex flex-col selection:bg-violet selection:text-white">
       {/* Anime.js Interactive Particles Background */}
@@ -149,6 +148,14 @@ export function App() {
         onOpenAuth={handleOpenAuth}
         onOpenReferral={() => setActiveModal('referral')}
         onOpenKyc={() => setActiveModal('kyc')}
+      />
+
+      {/* Live Crypto Price Ticker */}
+      <LiveCryptoTicker
+        onOpenConvert={() => {
+          if (!token || !user) handleOpenAuth('login');
+          else setActiveModal('convert');
+        }}
       />
 
       {/* Main Content Area with Framer Motion AnimatePresence */}
@@ -264,11 +271,13 @@ export function App() {
         onClose={() => setActiveModal(null)}
         balances={balances}
         onSuccess={refreshData}
+        onOpenKyc={() => setActiveModal('kyc')}
       />
       <IssueCardModal
         isOpen={activeModal === 'issue_card'}
         onClose={() => setActiveModal(null)}
         onSuccess={refreshData}
+        onOpenKyc={() => setActiveModal('kyc')}
       />
       <CardChargeModal
         isOpen={activeModal === 'test_card'}
@@ -282,6 +291,7 @@ export function App() {
         balances={balances}
         activeLoans={loans}
         onSuccess={refreshData}
+        onOpenKyc={() => setActiveModal('kyc')}
       />
       <MarketplaceModal
         isOpen={activeModal === 'marketplace'}

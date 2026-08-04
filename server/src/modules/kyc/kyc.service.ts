@@ -1,7 +1,7 @@
 import { KycRecord } from './kyc.model';
 import { User } from '../auth/user.model';
 import { WalletService } from '../wallets/wallet.service';
-import { AppError, NotFoundError } from '../../common/errors/AppError';
+import { AppError, NotFoundError, BadRequestError } from '../../common/errors/AppError';
 import { KycStatus } from '@novabank/shared';
 
 export class KycService {
@@ -16,13 +16,38 @@ export class KycService {
     const user = await User.findById(userId);
     if (!user) throw new NotFoundError('User not found');
 
+    if (!cnicNumber || !cnicNumber.trim()) {
+      throw new BadRequestError('KYC Requirement Error: CNIC Identification Number is required');
+    }
+
+    const digitsOnly = cnicNumber.replace(/\D/g, '');
+    if (digitsOnly.length !== 13) {
+      throw new BadRequestError('KYC Requirement Error: CNIC must be exactly 13 digits (e.g. 42101-9876543-1)');
+    }
+
+    if (!phoneSimVerifiedName || !phoneSimVerifiedName.trim()) {
+      throw new BadRequestError('KYC Requirement Error: Telecom SIM ownership legal name is required');
+    }
+
+    if (!cnicFrontUrl) {
+      throw new BadRequestError('KYC Requirement Error: Front side of CNIC identity document is required');
+    }
+
+    if (!cnicBackUrl) {
+      throw new BadRequestError('KYC Requirement Error: Back side of CNIC identity document is required');
+    }
+
+    if (!faceScanUrl) {
+      throw new BadRequestError('KYC Requirement Error: 3D Biometric Face Scan requirement is missing');
+    }
+
     const kycRecord = await KycRecord.create({
       userId,
-      cnicNumber: cnicNumber || '42101-9876543-1',
-      phoneSimVerifiedName: phoneSimVerifiedName || user.fullName,
-      cnicFrontUrl: cnicFrontUrl || 'uploaded_cnic_front.jpg',
-      cnicBackUrl: cnicBackUrl || 'uploaded_cnic_back.jpg',
-      faceScanUrl: faceScanUrl || 'uploaded_face_scan.jpg',
+      cnicNumber: cnicNumber.trim(),
+      phoneSimVerifiedName: phoneSimVerifiedName.trim(),
+      cnicFrontUrl,
+      cnicBackUrl,
+      faceScanUrl,
       status: 'VERIFIED',
       verifiedAt: new Date(),
     });

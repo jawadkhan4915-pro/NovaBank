@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowRightLeft, Clock, ShieldCheck } from 'lucide-react';
+import { X, ArrowRightLeft, Clock, ShieldCheck, ShieldAlert, AlertCircle } from 'lucide-react';
 import { CryptoCurrency, LockedQuote } from '@novabank/shared';
 import { api } from '../../lib/api';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface ConvertModalProps {
   isOpen: boolean;
   onClose: () => void;
   balances: Record<string, number>;
   onSuccess: () => void;
+  onOpenKyc?: () => void;
 }
 
-export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, balances, onSuccess }) => {
+export const ConvertModal: React.FC<ConvertModalProps> = ({
+  isOpen,
+  onClose,
+  balances,
+  onSuccess,
+  onOpenKyc,
+}) => {
+  const { user } = useAuthStore();
   const [fromAsset, setFromAsset] = useState<CryptoCurrency>('BTC');
   const [amount, setAmount] = useState('0.1');
   const [quote, setQuote] = useState<LockedQuote | null>(null);
@@ -18,6 +27,7 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
   const [loadingQuote, setLoadingQuote] = useState(false);
   const [executing, setExecuting] = useState(false);
   const [msg, setMsg] = useState('');
+  const [kycError, setKycError] = useState('');
 
   useEffect(() => {
     let timer: any;
@@ -37,12 +47,19 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
 
   if (!isOpen) return null;
 
+  const isKycVerified = user?.kycStatus === 'VERIFIED';
   const userBalance = balances[fromAsset] || 0;
 
   const handleRequestQuote = async () => {
+    if (!isKycVerified) {
+      setKycError('KYC Verification Required: You must complete Tier-3 Identity Verification before executing crypto-to-fiat conversions.');
+      return;
+    }
+
     try {
       setLoadingQuote(true);
       setMsg('');
+      setKycError('');
       const res = await api.post('/conversion/quote', {
         fromCurrency: fromAsset,
         amount: parseFloat(amount),
@@ -59,9 +76,15 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
 
   const handleExecuteConversion = async () => {
     if (!quote) return;
+    if (!isKycVerified) {
+      setKycError('KYC Verification Required: Please complete identity verification.');
+      return;
+    }
+
     try {
       setExecuting(true);
       setMsg('');
+      setKycError('');
       const res = await api.post('/conversion/execute', {
         quoteId: quote.quoteId,
       });
@@ -98,6 +121,38 @@ export const ConvertModal: React.FC<ConvertModalProps> = ({ isOpen, onClose, bal
             <p className="text-xs text-ink-muted">Guaranteed 15-second locked market rate quote</p>
           </div>
         </div>
+
+        {/* KYC Missing Requirement Notice */}
+        {!isKycVerified && (
+          <div className="mb-4 p-3.5 rounded-xl bg-danger/15 border border-danger/40 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-danger font-bold">
+              <ShieldAlert className="h-4 w-4" />
+              <span>KYC Requirement Missing</span>
+            </div>
+            <p className="text-ink-muted text-[11px] leading-relaxed">
+              Regulatory compliance requires identity verification to swap assets. Complete CNIC, SIM & Face Scan to unlock.
+            </p>
+            {onOpenKyc && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenKyc();
+                }}
+                className="w-full py-2 rounded-lg bg-gold hover:bg-gold-dim text-background font-bold text-xs transition-all shadow-sm"
+              >
+                Complete KYC Verification Now
+              </button>
+            )}
+          </div>
+        )}
+
+        {kycError && (
+          <div className="mb-4 p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <span>{kycError}</span>
+          </div>
+        )}
 
         {/* Input Form */}
         <div className="space-y-4 mb-5">

@@ -1,27 +1,39 @@
 import React, { useState } from 'react';
-import { X, CreditCard, Sparkles, Truck } from 'lucide-react';
+import { X, CreditCard, Sparkles, Truck, ShieldAlert, AlertCircle } from 'lucide-react';
 import { CardType } from '@novabank/shared';
 import { api } from '../../lib/api';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface IssueCardModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  onOpenKyc?: () => void;
 }
 
-export const IssueCardModal: React.FC<IssueCardModalProps> = ({ isOpen, onClose, onSuccess }) => {
+export const IssueCardModal: React.FC<IssueCardModalProps> = ({ isOpen, onClose, onSuccess, onOpenKyc }) => {
+  const { user } = useAuthStore();
   const [cardType, setCardType] = useState<CardType>('VIRTUAL');
-  const [cardholderName, setCardholderName] = useState('Alex Vance');
+  const [cardholderName, setCardholderName] = useState(user?.fullName || 'Alex Vance');
   const [shippingAddress, setShippingAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
+  const [kycError, setKycError] = useState('');
 
   if (!isOpen) return null;
 
+  const isKycVerified = user?.kycStatus === 'VERIFIED';
+
   const handleIssue = async () => {
+    if (!isKycVerified) {
+      setKycError('KYC Verification Required: Banking card issuance requires Tier-3 identity verification.');
+      return;
+    }
+
     try {
       setLoading(true);
       setMsg('');
+      setKycError('');
       const res = await api.post('/cards/issue', {
         cardType,
         cardholderName,
@@ -59,6 +71,38 @@ export const IssueCardModal: React.FC<IssueCardModalProps> = ({ isOpen, onClose,
             <p className="text-xs text-ink-muted">Virtual instant setup or physical metal card delivery</p>
           </div>
         </div>
+
+        {/* KYC Requirement Error Banner */}
+        {!isKycVerified && (
+          <div className="mb-4 p-3.5 rounded-xl bg-danger/15 border border-danger/40 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-danger font-bold">
+              <ShieldAlert className="h-4 w-4" />
+              <span>KYC Requirement Missing</span>
+            </div>
+            <p className="text-ink-muted text-[11px] leading-relaxed">
+              Visa/Mastercard issuance policies require completed CNIC, SIM & 3D Face Scan verification.
+            </p>
+            {onOpenKyc && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenKyc();
+                }}
+                className="w-full py-2 rounded-lg bg-gold hover:bg-gold-dim text-background font-bold text-xs transition-all shadow-sm"
+              >
+                Complete KYC Verification Now
+              </button>
+            )}
+          </div>
+        )}
+
+        {kycError && (
+          <div className="mb-4 p-3 rounded-xl bg-danger/10 border border-danger/30 text-danger text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <span>{kycError}</span>
+          </div>
+        )}
 
         <div className="space-y-4 mb-5">
           {/* Card Type Selector */}
