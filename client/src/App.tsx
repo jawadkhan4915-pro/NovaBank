@@ -26,7 +26,6 @@ import { LoanModal } from './features/modals/LoanModal';
 import { MarketplaceModal } from './features/modals/MarketplaceModal';
 import { KycModal } from './features/modals/KycModal';
 import { ReferralModal } from './features/modals/ReferralModal';
-import { ShieldAlert, LogIn, UserPlus } from 'lucide-react';
 import { CardDetails, LoanDetails, LedgerEntry } from '@novabank/shared';
 
 export function App() {
@@ -150,13 +149,15 @@ export function App() {
         onOpenKyc={() => setActiveModal('kyc')}
       />
 
-      {/* Live Crypto Price Ticker */}
-      <LiveCryptoTicker
-        onOpenConvert={() => {
-          if (!token || !user) handleOpenAuth('login');
-          else setActiveModal('convert');
-        }}
-      />
+      {/* Live Crypto Price Ticker (Rendered on non-landing views) */}
+      {activeTab !== 'landing' && (
+        <LiveCryptoTicker
+          onOpenConvert={() => {
+            if (!token || !user) handleOpenAuth('login');
+            else setActiveModal('convert');
+          }}
+        />
+      )}
 
       {/* Main Content Area with Framer Motion AnimatePresence */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8">

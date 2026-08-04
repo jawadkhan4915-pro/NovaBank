@@ -7,18 +7,14 @@ import {
   Landmark,
   ArrowRight,
   Sparkles,
-  TrendingUp,
   Lock,
   ArrowRightLeft,
   ChevronRight,
-  Globe2,
-  CheckCircle2,
-  Wallet,
 } from 'lucide-react';
-import { CryptoCurrency } from '@novabank/shared';
 import { SpotlightCard } from '../../components/SpotlightCard';
 import { TiltCard } from '../../components/TiltCard';
 import { AnimatedCounter } from '../../components/AnimatedCounter';
+import { LiveCryptoMarketGrid } from '../../components/LiveCryptoMarketGrid';
 
 interface LandingPageProps {
   onOpenAuth: (mode: 'login' | 'register') => void;
@@ -26,14 +22,6 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchApp }) => {
-  const mockRates: Record<CryptoCurrency, { name: string; rate: number; change: string }> = {
-    BTC: { name: 'Bitcoin', rate: 65240, change: '+3.4%' },
-    ETH: { name: 'Ethereum', rate: 3510, change: '+2.1%' },
-    BNB: { name: 'BNB Chain', rate: 585, change: '+1.8%' },
-    SOL: { name: 'Solana', rate: 148, change: '+5.2%' },
-    BCH: { name: 'Bitcoin Cash', rate: 452, change: '+0.9%' },
-  };
-
   return (
     <div className="space-y-16 py-4">
       {/* Hero Section */}
@@ -144,33 +132,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
         </div>
       </section>
 
-      {/* Live Market Ticker Bar */}
+      {/* Live Tracking Crypto Currency Card & Grid Section */}
       <section className="max-w-7xl mx-auto">
-        <SpotlightCard className="p-4 space-y-3">
-          <div className="flex items-center justify-between text-xs font-bold text-ink">
-            <span className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-gold animate-pulse" /> Supported Assets & Real-Time Rates
-            </span>
-            <span className="text-xs text-ink-muted font-mono bg-background border border-glass-border px-2.5 py-0.5 rounded-full">
-              Illustrative Feed • Live 15s
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            {Object.entries(mockRates).map(([symbol, item]) => (
-              <div key={symbol} className="p-3 rounded-xl bg-background border border-glass-border hover:border-gold/30 transition-all">
-                <div className="flex justify-between items-center text-xs font-bold text-ink">
-                  <span>{symbol}</span>
-                  <span className="text-xs text-success font-mono">{item.change}</span>
-                </div>
-                <div className="text-xs font-mono text-ink mt-1">
-                  <AnimatedCounter value={item.rate} prefix="$" decimals={0} /> USD
-                </div>
-                <div className="text-xs text-ink-faint mt-0.5">{item.name}</div>
-              </div>
-            ))}
-          </div>
-        </SpotlightCard>
+        <LiveCryptoMarketGrid onOpenConvert={onLaunchApp} />
       </section>
 
       {/* Product Feature Pillars */}
