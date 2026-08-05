@@ -28,6 +28,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
 
   const actions = [
     { id: 'deposit', label: 'Deposit Crypto (BTC, ETH, SOL, BNB, BCH)', icon: ArrowRightLeft, cat: 'Finance' },
+    { id: 'withdraw', label: 'Withdraw Funds (Tiered Fee Schedule)', icon: ArrowRightLeft, cat: 'Finance' },
+    { id: 'transfer', label: 'P2P Transfer to User Email / Bank ID', icon: ArrowRightLeft, cat: 'Finance' },
     { id: 'convert', label: 'Convert Crypto to USD (15s Locked Quote)', icon: ArrowRightLeft, cat: 'Finance' },
     { id: 'issue_card', label: 'Issue Virtual Card Instantly', icon: CreditCard, cat: 'Cards' },
     { id: 'test_card', label: 'Test Card Charge POS Simulator', icon: CreditCard, cat: 'Cards' },

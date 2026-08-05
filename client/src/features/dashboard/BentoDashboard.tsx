@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   RefreshCw,
   Gift,
+  Send,
 } from 'lucide-react';
 import { api } from '../../lib/api';
 import { CardDetails, LoanDetails, LedgerEntry, CryptoCurrency } from '@novabank/shared';
@@ -117,13 +118,25 @@ export const BentoDashboard: React.FC<BentoDashboardProps> = ({
             onClick={() => onOpenModal('deposit')}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gold hover:bg-gold-dim text-background text-xs font-bold transition-all shadow-gold-glow"
           >
-            <ArrowDownRight className="h-4 w-4" /> Deposit Crypto
+            <ArrowDownRight className="h-4 w-4" /> Deposit
+          </button>
+          <button
+            onClick={() => onOpenModal('withdraw')}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface hover:bg-surface-hover text-ink border border-glass-border text-xs font-bold transition-all"
+          >
+            <ArrowUpRight className="h-4 w-4 text-gold" /> Withdraw
+          </button>
+          <button
+            onClick={() => onOpenModal('transfer')}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-violet/20 text-violet border border-violet/30 text-xs font-bold hover:bg-violet/30 transition-all"
+          >
+            <Send className="h-4 w-4 text-violet" /> Transfer
           </button>
           <button
             onClick={() => onOpenModal('convert')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-violet/20 text-violet border border-violet/30 text-xs font-bold hover:bg-violet/30 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface hover:bg-surface-hover text-ink border border-glass-border text-xs font-bold transition-all"
           >
-            <ArrowRightLeft className="h-4 w-4" /> Convert to USD
+            <ArrowRightLeft className="h-4 w-4" /> Convert
           </button>
           <button
             onClick={() => onOpenModal('loan')}

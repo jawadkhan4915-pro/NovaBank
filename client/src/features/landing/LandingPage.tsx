@@ -101,7 +101,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
             className="lg:col-span-5 relative"
           >
             <div className="relative mx-auto max-w-sm sm:max-w-md space-y-4">
-              {/* 3D Parallax Tilt Card Component */}
+              {/* Interactive Virtual Bank Demo Card */}
               <TiltCard
                 cardType="Virtual Visa"
                 maskedPan="4111 •••• •••• 9821"
@@ -109,6 +109,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
                 expiryMonth={12}
                 expiryYear={28}
                 status="ACTIVE POS"
+                isDemo={true}
+                requireAuth={false}
               />
 
               {/* Micro Stat Cards with Animated Counter */}

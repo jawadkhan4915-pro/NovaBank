@@ -19,6 +19,8 @@ import { FaqsView } from './features/faqs/FaqsView';
 import { AuthModal } from './features/auth/AuthModal';
 
 import { DepositModal } from './features/modals/DepositModal';
+import { WithdrawModal } from './features/modals/WithdrawModal';
+import { TransferModal } from './features/modals/TransferModal';
 import { ConvertModal } from './features/modals/ConvertModal';
 import { IssueCardModal } from './features/modals/IssueCardModal';
 import { CardChargeModal } from './features/modals/CardChargeModal';
@@ -129,6 +131,8 @@ export function App() {
   const handleCommandSelect = (action: string) => {
     if (action === 'open_cmd') setCmdOpen(true);
     else if (action === 'deposit') setActiveModal('deposit');
+    else if (action === 'withdraw') setActiveModal('withdraw');
+    else if (action === 'transfer') setActiveModal('transfer');
     else if (action === 'convert') setActiveModal('convert');
     else if (action === 'issue_card') setActiveModal('issue_card');
     else if (action === 'test_card') setActiveModal('test_card');
@@ -268,6 +272,18 @@ export function App() {
         isOpen={activeModal === 'deposit'}
         onClose={() => setActiveModal(null)}
         depositAddresses={depositAddresses}
+        onSuccess={refreshData}
+      />
+      <WithdrawModal
+        isOpen={activeModal === 'withdraw'}
+        onClose={() => setActiveModal(null)}
+        balances={balances}
+        onSuccess={refreshData}
+      />
+      <TransferModal
+        isOpen={activeModal === 'transfer'}
+        onClose={() => setActiveModal(null)}
+        balances={balances}
         onSuccess={refreshData}
       />
       <ConvertModal

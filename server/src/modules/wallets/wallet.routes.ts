@@ -10,5 +10,7 @@ router.use(authenticateJwt);
 router.get('/summary', WalletController.getWalletSummary);
 router.get('/history', WalletController.getTransactionHistory);
 router.post('/deposit/simulate', idempotencyMiddleware, WalletController.simulateDeposit);
+router.post('/withdraw', idempotencyMiddleware, WalletController.withdraw);
+router.post('/transfer', idempotencyMiddleware, WalletController.transfer);
 
 export const walletRoutes = router;

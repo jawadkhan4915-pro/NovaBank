@@ -46,6 +46,50 @@ export class WalletController {
     }
   }
 
+  public static async withdraw(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user!.userId;
+      const { currency, amount, destinationAddress, bankAccountDetails } = req.body;
+      const result = await WalletService.processWithdrawal({
+        userId,
+        currency,
+        amount: Number(amount),
+        destinationAddress,
+        bankAccountDetails,
+      });
+
+      const response: ApiResponse<typeof result> = {
+        success: true,
+        data: result,
+      };
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public static async transfer(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const senderUserId = req.user!.userId;
+      const { recipientIdentifier, currency, amount, note } = req.body;
+      const result = await WalletService.processTransfer({
+        senderUserId,
+        recipientIdentifier,
+        currency,
+        amount: Number(amount),
+        note,
+      });
+
+      const response: ApiResponse<typeof result> = {
+        success: true,
+        data: result,
+      };
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   public static async getTransactionHistory(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const userId = req.user!.userId;

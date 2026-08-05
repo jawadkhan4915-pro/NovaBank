@@ -38,6 +38,7 @@ export type LedgerEntryType = 'debit' | 'credit';
 export type LedgerRefType =
   | 'DEPOSIT'
   | 'WITHDRAWAL'
+  | 'WITHDRAWAL_FEE'
   | 'CONVERSION_DEBIT'
   | 'CONVERSION_CREDIT'
   | 'CARD_SPEND'
@@ -49,6 +50,7 @@ export type LedgerRefType =
   | 'LOAN_LIQUIDATION'
   | 'MARKETPLACE_PURCHASE'
   | 'P2P_TRANSFER'
+  | 'P2P_TRANSFER_FEE'
   | 'REFERRAL_REWARD';
 
 export interface LedgerEntry {
@@ -173,6 +175,12 @@ export interface FeeRules {
   cardSpendFeeSmall: number; // $0.10 for <= $500
   cardSpendFeeMedium: number; // $0.50 for $500.01 - $1000
   cardSpendFeeLarge: number; // $1.00 for > $1000
+  withdrawalFeeSmall: number; // $0.10 for <= $500
+  withdrawalFeeMedium: number; // $0.50 for $500.01 - $1000
+  withdrawalFeeLarge: number; // $1.00 for > $1000
+  transferFeeSmall: number; // $0.10 for <= $500
+  transferFeeMedium: number; // $0.50 for $500.01 - $1000
+  transferFeeLarge: number; // $1.00 for > $1000
   loanRepaymentFee: number; // $1.00 flat
 }
 
@@ -180,6 +188,12 @@ export const DEFAULT_FEE_RULES: FeeRules = {
   cardSpendFeeSmall: 0.10,
   cardSpendFeeMedium: 0.50,
   cardSpendFeeLarge: 1.00,
+  withdrawalFeeSmall: 0.10,
+  withdrawalFeeMedium: 0.50,
+  withdrawalFeeLarge: 1.00,
+  transferFeeSmall: 0.10,
+  transferFeeMedium: 0.50,
+  transferFeeLarge: 1.00,
   loanRepaymentFee: 1.00,
 };
 
