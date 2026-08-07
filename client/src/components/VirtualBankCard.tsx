@@ -360,7 +360,7 @@ export const VirtualBankCard: React.FC<VirtualBankCardProps> = ({
                   type="button"
                   onClick={() => handleCopy(displayPan.replace(/\s+/g, ''), 'pan')}
                   title="Copy Card Number"
-                  className="p-1 rounded bg-surface/50 hover:bg-surface border border-glass-border text-ink-muted hover:text-gold transition-colors"
+                  className="p-1 rounded bg-black/30 hover:bg-surface border border-glass-border text-ink-muted hover:text-gold transition-colors"
                 >
                   {copiedField === 'pan' ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>

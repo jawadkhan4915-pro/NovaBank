@@ -99,7 +99,7 @@ export const ReferralModal: React.FC<ReferralModalProps> = ({ isOpen, onClose })
         </div>
 
         {/* Referral Program How it Works */}
-        <div className="p-4 rounded-2xl bg-surface/60 border border-glass-border space-y-2.5 text-xs">
+        <div className="p-4 rounded-2xl bg-background/60 border border-glass-border space-y-2.5 text-xs">
           <div className="font-bold text-ink flex items-center gap-1.5">
             <Sparkles className="h-4 w-4 text-gold" /> How Referral Rewards Work
           </div>

@@ -206,7 +206,7 @@ export const LiveCryptoTicker: React.FC<LiveCryptoTickerProps> = ({ onOpenConver
   }, [coins, onRatesUpdate]);
 
   return (
-    <div className="w-full bg-surface/80 backdrop-blur-md border-y border-glass-border py-2 px-4 overflow-hidden relative z-20">
+    <div className="w-full bg-background/80 backdrop-blur-md border-y border-glass-border py-2 px-4 overflow-hidden relative z-20">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Left Badge Indicator */}
         <div className="flex items-center gap-2 flex-shrink-0 text-xs font-mono font-bold text-ink">

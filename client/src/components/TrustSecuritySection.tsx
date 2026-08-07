@@ -223,7 +223,7 @@ export const TrustSecuritySection: React.FC<{ onLaunchApp: () => void }> = ({ on
               return (
                 <div
                   key={idx}
-                  className="flex flex-col items-center text-center p-3 rounded-xl bg-surface/60 border border-glass-border hover:border-gold/30 transition-all hover:scale-[1.02]"
+                  className="flex flex-col items-center text-center p-3 rounded-xl bg-background/60 border border-glass-border hover:border-gold/30 transition-all hover:scale-[1.02]"
                 >
                   <Icon className="h-6 w-6 text-gold mb-2" />
                   <span className="text-xs font-bold text-ink leading-tight">{acc.name}</span>
@@ -251,7 +251,7 @@ export const TrustSecuritySection: React.FC<{ onLaunchApp: () => void }> = ({ on
         </div>
 
         {/* Tab Selection */}
-        <div className="flex flex-wrap justify-center gap-2 bg-surface/80 p-1.5 rounded-2xl border border-glass-border max-w-3xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-2 bg-background/60 p-1.5 rounded-2xl border border-glass-border max-w-3xl mx-auto">
           {securityFeatures.map((feat) => {
             const Icon = feat.icon;
             const isSelected = activeTab === feat.id;
@@ -333,7 +333,7 @@ export const TrustSecuritySection: React.FC<{ onLaunchApp: () => void }> = ({ on
 
                     {/* Right Visual Card */}
                     <div className="lg:col-span-5">
-                      <div className="bg-surface/90 rounded-2xl p-6 border border-glass-border space-y-4 shadow-xl">
+                      <div className="bg-background/80 backdrop-blur-md rounded-2xl p-6 border border-glass-border space-y-4 shadow-xl">
                         <div className="flex items-center justify-between border-b border-glass-border pb-3">
                           <span className="text-xs font-mono font-bold text-ink uppercase flex items-center gap-1.5">
                             <BadgeCheck className="h-4 w-4 text-gold" /> Authenticity Protocol
@@ -444,19 +444,19 @@ export const TrustSecuritySection: React.FC<{ onLaunchApp: () => void }> = ({ on
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 font-mono text-xs">
-                <div className="p-3 rounded-xl bg-surface/70 border border-glass-border">
+                <div className="p-3 rounded-xl bg-background/60 border border-glass-border">
                   <div className="text-ink-muted text-[10px] font-semibold uppercase">European HQ</div>
                   <div className="text-ink font-bold mt-0.5">Zurich, Switzerland</div>
                   <div className="text-[10px] text-gold mt-0.5">CHE-482.910.119 HRB</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-surface/70 border border-glass-border">
+                <div className="p-3 rounded-xl bg-background/60 border border-glass-border">
                   <div className="text-ink-muted text-[10px] font-semibold uppercase">Americas HQ</div>
                   <div className="text-ink font-bold mt-0.5">Wall St, New York, USA</div>
                   <div className="text-[10px] text-gold mt-0.5">FinCEN MSB #3100028491</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-surface/70 border border-glass-border">
+                <div className="p-3 rounded-xl bg-background/60 border border-glass-border">
                   <div className="text-ink-muted text-[10px] font-semibold uppercase">SWIFT / BIC Identifier</div>
                   <div className="text-gold font-bold mt-0.5">NOVABUSZ</div>
                   <div className="text-[10px] text-success mt-0.5">Direct FedWire & SEPA</div>
@@ -464,7 +464,7 @@ export const TrustSecuritySection: React.FC<{ onLaunchApp: () => void }> = ({ on
               </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-surface/90 rounded-2xl border border-glass-border text-center space-y-4">
+            <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-background/80 backdrop-blur-md rounded-2xl border border-glass-border text-center space-y-4">
               <div className="h-12 w-12 rounded-2xl bg-gold/15 border border-gold/30 text-gold flex items-center justify-center">
                 <ShieldCheck className="h-7 w-7" />
               </div>
