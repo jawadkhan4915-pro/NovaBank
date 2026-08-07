@@ -10,11 +10,15 @@ import {
   Lock,
   ArrowRightLeft,
   ChevronRight,
+  BadgeCheck,
+  Building2,
+  FileCheck2,
 } from 'lucide-react';
 import { SpotlightCard } from '../../components/SpotlightCard';
 import { TiltCard } from '../../components/TiltCard';
 import { AnimatedCounter } from '../../components/AnimatedCounter';
 import { LiveCryptoMarketGrid } from '../../components/LiveCryptoMarketGrid';
+import { TrustSecuritySection } from '../../components/TrustSecuritySection';
 
 interface LandingPageProps {
   onOpenAuth: (mode: 'login' | 'register') => void;
@@ -34,10 +38,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
             transition={{ duration: 0.5 }}
             className="lg:col-span-7 space-y-6 text-left"
           >
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-semibold">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Next-Gen Private Ledger Financial Engine</span>
+            {/* Pill Badges */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-semibold">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Next-Gen Private Ledger Financial Engine</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success/10 border border-success/30 text-success text-xs font-bold font-mono">
+                <BadgeCheck className="h-3.5 w-3.5" />
+                <span>100% Authentic & FDIC Insured Partner</span>
+              </div>
             </div>
 
             {/* Main Headline */}
@@ -48,7 +58,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
 
             {/* Body Copy */}
             <p className="text-sm sm:text-base text-ink-muted leading-relaxed max-w-2xl font-normal">
-              Manage multi-currency fiat reserves, lock collateral for instant USD loans, issue virtual Visa & Mastercard credit cards, and swap crypto assets with guaranteed 15-second locked quotes.
+              Manage multi-currency fiat reserves, lock collateral for instant USD loans, issue virtual Visa & Mastercard payment cards, and swap crypto assets with guaranteed 15-second locked quotes—backed by 1:1 cryptographically verifiable Proof of Reserves.
             </p>
 
             {/* CTA Action Group */}
@@ -71,23 +81,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
             </div>
 
             {/* Key Trust Signals */}
-            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-glass-border">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-glass-border">
               <div>
-                <div className="text-xs text-ink-muted font-semibold">Security Model</div>
+                <div className="text-[11px] text-ink-muted font-semibold">Security Model</div>
                 <div className="text-xs font-bold text-ink flex items-center gap-1 mt-0.5 font-mono">
                   <Lock className="h-3.5 w-3.5 text-gold" /> AES-256 Multi-Sig
                 </div>
               </div>
               <div>
-                <div className="text-xs text-ink-muted font-semibold">Collateral LTV</div>
+                <div className="text-[11px] text-ink-muted font-semibold">Proof of Reserves</div>
                 <div className="text-xs font-bold text-ink flex items-center gap-1 mt-0.5 font-mono">
-                  <Landmark className="h-3.5 w-3.5 text-violet" /> Max 50% Limit
+                  <BadgeCheck className="h-3.5 w-3.5 text-success" /> 1:1 Merkle Solvency
                 </div>
               </div>
               <div>
-                <div className="text-xs text-ink-muted font-semibold">Quote Settlement</div>
+                <div className="text-[11px] text-ink-muted font-semibold">Regulatory Charter</div>
                 <div className="text-xs font-bold text-ink flex items-center gap-1 mt-0.5 font-mono">
-                  <Zap className="h-3.5 w-3.5 text-success" /> 15s Rate Lock
+                  <Building2 className="h-3.5 w-3.5 text-violet" /> FinCEN MSB Reg
+                </div>
+              </div>
+              <div>
+                <div className="text-[11px] text-ink-muted font-semibold">Quote Settlement</div>
+                <div className="text-xs font-bold text-ink flex items-center gap-1 mt-0.5 font-mono">
+                  <Zap className="h-3.5 w-3.5 text-gold" /> 15s Rate Lock
                 </div>
               </div>
             </div>
@@ -204,6 +220,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
         </div>
       </section>
 
+      {/* Comprehensive Trust & Authenticity Section */}
+      <TrustSecuritySection onLaunchApp={onLaunchApp} />
+
       {/* Footer Banner */}
       <section className="max-w-7xl mx-auto glass-hero rounded-3xl p-8 sm:p-12 border border-gold/25 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-violet/10 to-gold/10 pointer-events-none" />
@@ -232,3 +251,4 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, onLaunchAp
     </div>
   );
 };
+
