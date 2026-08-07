@@ -110,12 +110,14 @@ export const CardsView: React.FC<CardsViewProps> = ({ cards, onOpenIssueModal, o
 
                       {/* 3D Interactive Tilt Card Graphic */}
                       <TiltCard
+                        cardId={card.id}
                         cardType={card.cardType}
                         maskedPan={card.maskedPan}
                         cardholderName={card.cardholderName}
                         expiryMonth={card.expiryMonth}
                         expiryYear={card.expiryYear}
                         status={card.status}
+                        onTapChip={onOpenTestModal}
                       />
 
                       {/* Spending Progress */}

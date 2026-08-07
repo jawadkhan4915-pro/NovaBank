@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Copy, Check, Eye, EyeOff, ShieldCheck, RefreshCw, Fingerprint, KeyRound, Clock, ShieldAlert, X, Sparkles } from 'lucide-react';
+import { Copy, Check, Eye, EyeOff, ShieldCheck, RefreshCw, Fingerprint, KeyRound, Clock, ShieldAlert, X, Sparkles, Zap, Smartphone } from 'lucide-react';
+import { PosTerminalModal } from '../features/modals/PosTerminalModal';
+import { WalletProvisionModal } from '../features/modals/WalletProvisionModal';
 
 interface VirtualBankCardProps {
+  cardId?: string;
   cardType?: string;
   maskedPan?: string;
   cardholderName?: string;
@@ -14,49 +17,67 @@ interface VirtualBankCardProps {
   showBackViewInitially?: boolean;
   isDemo?: boolean;
   requireAuth?: boolean;
+  onTapChip?: () => void;
+  onSuccess?: () => void;
 }
 
-// Authentic Metallic EMV Bank Chip Component
-export const BankChipSvg: React.FC = () => (
-  <svg viewBox="0 0 48 36" className="w-11 h-9 rounded-md shadow-md flex-shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="chipGoldBg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#F9E29C" />
-        <stop offset="30%" stopColor="#D4A437" />
-        <stop offset="65%" stopColor="#F3D57C" />
-        <stop offset="100%" stopColor="#99731C" />
-      </linearGradient>
-      <linearGradient id="chipPattern" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stopColor="#4A3605" />
-        <stop offset="100%" stopColor="#2A1E02" />
-      </linearGradient>
-    </defs>
-    {/* Base Chip Rectangle */}
-    <rect width="48" height="36" rx="5" fill="url(#chipGoldBg)" stroke="#8A6414" strokeWidth="0.8" />
-    <rect x="1" y="1" width="46" height="34" rx="4" stroke="#FFF5CC" strokeWidth="0.5" strokeOpacity="0.7" />
-    
-    {/* EMV Microcircuit Cutouts */}
-    <path d="M 0 11 H 16 C 18 11 18 18 16 18 H 0" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    <path d="M 48 11 H 32 C 30 11 30 18 32 18 H 48" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    <path d="M 0 25 H 16 C 18 25 18 18 16 18 H 0" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    <path d="M 48 25 H 32 C 30 25 30 18 32 18 H 48" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    <path d="M 16 0 V 11" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    <path d="M 32 0 V 11" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    <path d="M 16 36 V 25" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    <path d="M 32 36 V 25" stroke="url(#chipPattern)" strokeWidth="1.1" />
-    
-    {/* Center Microchip Core */}
-    <rect x="18" y="13" width="12" height="10" rx="2" fill="#E6BA47" stroke="#3D2B03" strokeWidth="0.9" />
-  </svg>
+// Authentic Metallic EMV Bank Chip Component with Interactive POS Trigger
+export const BankChipSvg: React.FC<{ onClick?: (e?: React.MouseEvent) => void; className?: string }> = ({ onClick, className = '' }) => (
+  <div
+    onClick={onClick}
+    className={`relative group/chip cursor-pointer transition-transform hover:scale-105 active:scale-95 ${className}`}
+    title="Tap Bank Chip to Scan & Pay at Shopping Mall POS Terminal"
+  >
+    <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-gold via-yellow-300 to-gold opacity-0 group-hover/chip:opacity-100 blur-sm transition-opacity duration-300 animate-pulse" />
+    <svg viewBox="0 0 48 36" className="w-11 h-9 rounded-md shadow-md flex-shrink-0 relative z-10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="chipGoldBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F9E29C" />
+          <stop offset="30%" stopColor="#D4A437" />
+          <stop offset="65%" stopColor="#F3D57C" />
+          <stop offset="100%" stopColor="#99731C" />
+        </linearGradient>
+        <linearGradient id="chipPattern" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#4A3605" />
+          <stop offset="100%" stopColor="#2A1E02" />
+        </linearGradient>
+      </defs>
+      {/* Base Chip Rectangle */}
+      <rect width="48" height="36" rx="5" fill="url(#chipGoldBg)" stroke="#8A6414" strokeWidth="0.8" />
+      <rect x="1" y="1" width="46" height="34" rx="4" stroke="#FFF5CC" strokeWidth="0.5" strokeOpacity="0.7" />
+      
+      {/* EMV Microcircuit Cutouts */}
+      <path d="M 0 11 H 16 C 18 11 18 18 16 18 H 0" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      <path d="M 48 11 H 32 C 30 11 30 18 32 18 H 48" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      <path d="M 0 25 H 16 C 18 25 18 18 16 18 H 0" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      <path d="M 48 25 H 32 C 30 25 30 18 32 18 H 48" fill="none" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      <path d="M 16 0 V 11" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      <path d="M 32 0 V 11" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      <path d="M 16 36 V 25" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      <path d="M 32 36 V 25" stroke="url(#chipPattern)" strokeWidth="1.1" />
+      
+      {/* Center Microchip Core */}
+      <rect x="18" y="13" width="12" height="10" rx="2" fill="#E6BA47" stroke="#3D2B03" strokeWidth="0.9" />
+    </svg>
+    <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[8px] font-mono font-bold text-gold opacity-0 group-hover/chip:opacity-100 transition-opacity whitespace-nowrap bg-background/90 px-1 rounded border border-gold/30 pointer-events-none">
+      TAP POS CHIP
+    </span>
+  </div>
 );
 
-// Contactless NFC / RFID Wave Icon
-export const ContactlessIconSvg: React.FC = () => (
-  <svg viewBox="0 0 24 24" className="w-6 h-6 text-gold/80" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-    <path d="M8.5 14.5A4 4 0 0 0 8.5 9.5" />
-    <path d="M11.5 17.5A8 8 0 0 0 11.5 6.5" />
-    <path d="M14.5 20.5A12 12 0 0 0 14.5 3.5" />
-  </svg>
+// Contactless NFC / RFID Wave Icon with Interactive POS Trigger
+export const ContactlessIconSvg: React.FC<{ onClick?: (e?: React.MouseEvent) => void; className?: string }> = ({ onClick, className = '' }) => (
+  <div
+    onClick={onClick}
+    className={`relative group/nfc cursor-pointer transition-transform hover:scale-110 active:scale-95 ${className}`}
+    title="NFC Contactless Wave — Tap to Pay at Shopping Mall POS Terminal"
+  >
+    <svg viewBox="0 0 24 24" className="w-6 h-6 text-gold/80 group-hover/nfc:text-gold transition-colors animate-pulse" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+      <path d="M8.5 14.5A4 4 0 0 0 8.5 9.5" />
+      <path d="M11.5 17.5A8 8 0 0 0 11.5 6.5" />
+      <path d="M14.5 20.5A12 12 0 0 0 14.5 3.5" />
+    </svg>
+  </div>
 );
 
 // Mastercard Glossy Overlapping Circles Badge
@@ -79,6 +100,7 @@ export const VisaLogoSvg: React.FC = () => (
 );
 
 export const VirtualBankCard: React.FC<VirtualBankCardProps> = ({
+  cardId,
   cardType = 'Virtual Visa',
   maskedPan = '4111 8920 4821 9821',
   cardholderName = 'ALEX VANCE',
@@ -91,10 +113,25 @@ export const VirtualBankCard: React.FC<VirtualBankCardProps> = ({
   showBackViewInitially = false,
   isDemo = false,
   requireAuth = true,
+  onTapChip,
+  onSuccess,
 }) => {
   const [isFlipped, setIsFlipped] = useState(showBackViewInitially);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showFullDetails, setShowFullDetails] = useState(false);
+
+  // POS Terminal Modal State
+  const [isPosModalOpen, setIsPosModalOpen] = useState(false);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+
+  const handleChipClick = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (onTapChip) {
+      onTapChip();
+    } else {
+      setIsPosModalOpen(true);
+    }
+  };
 
   // Biometric / Passkey Verification Modal State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -279,6 +316,15 @@ export const VirtualBankCard: React.FC<VirtualBankCardProps> = ({
               </>
             )}
           </button>
+
+          <button
+            type="button"
+            onClick={handleChipClick}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gold/15 hover:bg-gold/25 border border-gold/40 text-gold font-semibold text-[11px] transition-all shadow-sm"
+          >
+            <Zap className="h-3 w-3 text-gold animate-pulse" />
+            <span>Tap Chip (POS)</span>
+          </button>
         </div>
 
         {/* 1 Minute Countdown Timer Display */}
@@ -330,7 +376,7 @@ export const VirtualBankCard: React.FC<VirtualBankCardProps> = ({
               </div>
 
               <div className="flex items-center gap-3">
-                <ContactlessIconSvg />
+                <ContactlessIconSvg onClick={handleChipClick} />
                 {/* Hologram Badge */}
                 <div className="h-6 px-2 rounded-full border border-gold/40 bg-gradient-to-r from-gold/20 via-violet/20 to-gold/20 flex items-center justify-center shadow-inner">
                   <span className="text-[8px] font-mono font-bold tracking-widest text-gold uppercase">
@@ -343,7 +389,7 @@ export const VirtualBankCard: React.FC<VirtualBankCardProps> = ({
             {/* Middle Section: EMV Microchip & PAN */}
             <div className="space-y-3 my-auto">
               <div className="flex items-center justify-between">
-                <BankChipSvg />
+                <BankChipSvg onClick={handleChipClick} />
                 {copiedField === 'pan' && (
                   <span className="text-[10px] font-mono font-bold text-success bg-success/15 px-2 py-0.5 rounded border border-success/30">
                     Card Number Copied!
@@ -554,6 +600,33 @@ export const VirtualBankCard: React.FC<VirtualBankCardProps> = ({
           </div>
         </div>
       )}
+
+      {/* One-Tap Physical Store Apple Pay / Google Wallet Provisioning Button */}
+      <button
+        type="button"
+        onClick={() => setIsWalletModalOpen(true)}
+        className="w-full mt-2 py-2 rounded-xl bg-background/60 hover:bg-surface border border-glass-border hover:border-gold/40 text-ink-muted hover:text-gold text-[11px] font-semibold transition-all flex items-center justify-center gap-1.5 font-mono shadow-sm"
+      >
+        <Smartphone className="h-3.5 w-3.5 text-gold animate-pulse" />
+        <span>Add to Apple Pay / Google Wallet (Physical Mall POS Pay)</span>
+      </button>
+
+      {/* Shopping Mall POS Card Payment Terminal Modal */}
+      <PosTerminalModal
+        isOpen={isPosModalOpen}
+        onClose={() => setIsPosModalOpen(false)}
+        initialCardId={cardId}
+        onSuccess={onSuccess}
+      />
+
+      {/* Real-World Apple Pay / Google Wallet Tokenization Modal */}
+      <WalletProvisionModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        cardType={cardType}
+        maskedPan={maskedPan}
+        cardholderName={cardholderName}
+      />
     </div>
   );
 };
